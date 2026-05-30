@@ -1,0 +1,3009 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WONGBAGUS PRO — Scanner AI · Scanner Rumus · Bank Rumus</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#f59e0b; --gold-light:#fcd34d; --gold-dark:#b45309;
+  --bg:#07070e; --bg2:#0f0f1a; --bg3:#15152a; --bg4:#1a1a30;
+  --card:#111128; --border:rgba(245,158,11,.15); --border2:rgba(255,255,255,.07);
+  --text:#e2e2f0; --muted:#6b6b8a;
+  --green:#10b981; --red:#dc2626; --purple:#7c3aed;
+  --cyan:#00d4ff; --orange:#f97316;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* BACKGROUND GLOW */
+body::before{content:'';position:fixed;top:-300px;right:-200px;width:700px;height:700px;
+  background:radial-gradient(circle,rgba(245,158,11,.04) 0%,transparent 65%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;bottom:-200px;left:-150px;width:500px;height:500px;
+  background:radial-gradient(circle,rgba(124,58,237,.04) 0%,transparent 65%);pointer-events:none;z-index:0;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 14px;
+  background:rgba(7,7,14,.95);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:999;}
+.logo-wrap{display:flex;align-items:center;gap:9px;flex:1;}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--gold),var(--red));
+  border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue';font-size:15px;color:#000;font-weight:900;flex-shrink:0;
+  box-shadow:0 0 20px rgba(245,158,11,.4);}
+.logo-title{font-family:'Bebas Neue';font-size:16px;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--gold-light),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.logo-sub{font-size:9px;color:var(--muted);font-weight:700;letter-spacing:.5px;}
+.topbar-status{font-size:9px;color:var(--muted);padding:3px 8px;
+  background:rgba(255,255,255,.04);border-radius:20px;border:1px solid var(--border2);}
+
+/* ── NAV TABS ── */
+.nav-bar{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);
+  position:sticky;top:54px;z-index:99;overflow-x:auto;scrollbar-width:none;}
+.nav-bar::-webkit-scrollbar{display:none;}
+.nav-tab{flex:1;min-width:80px;padding:11px 6px;
+  font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.8px;
+  color:var(--muted);background:transparent;border:none;cursor:pointer;
+  border-bottom:2px solid transparent;transition:.2s;display:flex;flex-direction:column;
+  align-items:center;gap:2px;white-space:nowrap;}
+.nav-tab .tab-ico{font-size:14px;}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(245,158,11,.04);}
+.nav-tab:hover:not(.active){color:var(--text);}
+
+/* ── PAGE PANELS ── */
+.page-wrap{max-width:640px;margin:0 auto;padding:12px 12px 50px;position:relative;z-index:1;}
+.page-panel{display:none;}
+.page-panel.active{display:block;}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:11px;}
+.card-title{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--muted);
+  text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.card-title::before{content:'';display:block;width:3px;height:12px;background:var(--gold);border-radius:2px;}
+
+/* ── FORM ── */
+label{font-size:10px;color:var(--muted);font-weight:800;display:block;
+  margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase;}
+select,input,textarea{
+  background:var(--bg3);border:1px solid var(--border);border-radius:9px;
+  padding:9px 12px;color:var(--text);font-family:'Nunito';font-size:13px;
+  font-weight:600;width:100%;outline:none;margin-bottom:10px;transition:border-color .2s;}
+select:focus,input:focus,textarea:focus{border-color:var(--gold);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.form-row>div select,.form-row>div input{margin-bottom:0;}
+.form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.form-row3>div select{margin-bottom:0;}
+.hint-line{font-size:10px;color:var(--green);font-weight:700;min-height:16px;margin:-7px 0 9px;
+  display:flex;align-items:center;gap:4px;}
+.hint-line.warn{color:#fbbf24;}
+
+/* ── BUTTONS ── */
+.btn{padding:11px 16px;border-radius:9px;border:none;cursor:pointer;
+  font-family:'Nunito';font-size:13px;font-weight:800;transition:.2s;
+  width:100%;display:flex;align-items:center;justify-content:center;gap:7px;}
+.btn-ai{background:linear-gradient(135deg,#7c3aed,#4c1d95);color:#fff;
+  box-shadow:0 4px 20px rgba(124,58,237,.3);}
+.btn-ai:hover:not(:disabled){opacity:.9;transform:translateY(-1px);}
+.btn-ai:disabled{opacity:.4;cursor:not-allowed;}
+.btn-gold{background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:#000;
+  box-shadow:0 4px 14px rgba(245,158,11,.25);}
+.btn-gold:hover:not(:disabled){opacity:.9;transform:translateY(-1px);}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed;}
+.btn-scan-radar{background:linear-gradient(135deg,#0f172a,#1e293b);color:var(--cyan);
+  border:1px solid rgba(0,212,255,.3);font-family:'Barlow Condensed';font-size:15px;letter-spacing:2px;
+  box-shadow:0 0 20px rgba(0,212,255,.1);transition:.3s;}
+.btn-scan-radar:hover:not(:disabled){box-shadow:0 0 30px rgba(0,212,255,.25);border-color:var(--cyan);}
+.btn-scan-radar.scanning{background:linear-gradient(135deg,#1a0a00,#2a1200);color:#fbbf24;
+  border-color:rgba(251,191,36,.4);box-shadow:0 0 30px rgba(251,191,36,.15);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-green{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.35);color:var(--green);}
+.btn-green:hover{background:rgba(16,185,129,.25);}
+.btn-red{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.3);color:#f87171;}
+.btn-red:hover{background:rgba(220,38,38,.25);}
+.btn-sm{padding:6px 12px;font-size:11px;font-weight:700;border-radius:7px;border:none;
+  cursor:pointer;font-family:'Nunito';transition:.2s;display:inline-flex;align-items:center;gap:5px;}
+.btn-sm-gold{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:var(--gold);}
+.btn-sm-gold:hover{background:rgba(245,158,11,.3);}
+.btn-sm-cyan{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);color:var(--cyan);}
+.btn-sm-cyan:hover{background:rgba(0,212,255,.2);}
+.btn-sm-red{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.25);color:#f87171;}
+.btn-sm-red:hover{background:rgba(220,38,38,.2);}
+.btn-row{display:flex;gap:8px;}
+.btn-row .btn{flex:1;}
+.autofill-btn{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);
+  color:var(--green);border-radius:7px;padding:4px 10px;font-family:'Nunito';
+  font-size:11px;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap;}
+.autofill-btn:hover{background:rgba(16,185,129,.2);}
+
+/* ── HERO RESULT CARD ── */
+.result-hero{background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(76,29,149,.06));
+  border:1px solid rgba(124,58,237,.25);border-radius:14px;padding:16px;margin-bottom:11px;text-align:center;}
+.result-hero.gold-theme{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(180,83,9,.06));
+  border-color:rgba(245,158,11,.25);}
+.result-4d{font-family:'Bebas Neue';font-size:48px;letter-spacing:8px;color:var(--text);
+  text-shadow:0 0 40px rgba(124,58,237,.4);line-height:1;}
+.result-hero.gold-theme .result-4d{text-shadow:0 0 40px rgba(245,158,11,.4);}
+.result-sub{display:flex;gap:14px;justify-content:center;margin-top:8px;flex-wrap:wrap;}
+.result-pill{text-align:center;}
+.result-pill .lbl{font-size:9px;color:var(--muted);font-weight:800;letter-spacing:.5px;text-transform:uppercase;}
+.result-pill .val{font-family:'Barlow Condensed';font-size:18px;font-weight:700;color:var(--gold);}
+.strength-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;
+  padding:3px 10px;border-radius:20px;margin-top:10px;}
+.strength-kuat{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.strength-sedang{background:rgba(245,158,11,.15);color:var(--gold);border:1px solid rgba(245,158,11,.3);}
+.strength-lemah{background:rgba(220,38,38,.12);color:#f87171;border:1px solid rgba(220,38,38,.25);}
+
+/* ── BBFS GRID ── */
+.bbfs-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:11px;}
+.bbfs-box{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px;text-align:center;}
+.bbfs-lbl{font-size:9px;color:var(--muted);font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;}
+.bbfs-nums{font-family:'Barlow Condensed';font-size:16px;font-weight:700;color:var(--cyan);letter-spacing:2px;}
+
+/* ── BALLS ── */
+.balls-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.ball{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Barlow Condensed';font-size:13px;font-weight:700;}
+.ball-hot{background:rgba(249,115,22,.2);border:1px solid rgba(249,115,22,.4);color:var(--orange);}
+.ball-mati{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.25);color:#f87171;}
+
+/* ── RUMUS ITEMS ── */
+.rumus-item{background:var(--bg3);border-radius:9px;padding:10px 11px;
+  margin-bottom:7px;display:flex;align-items:center;gap:10px;}
+.rumus-num{width:20px;height:20px;background:rgba(124,58,237,.25);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;
+  color:#a78bfa;flex-shrink:0;}
+.rumus-formula{flex:1;font-size:11px;color:var(--text);line-height:1.4;}
+.rumus-right{text-align:right;flex-shrink:0;}
+.rumus-hasil{font-family:'Bebas Neue';font-size:20px;letter-spacing:3px;color:var(--gold);}
+.rumus-acc{font-size:9px;font-weight:700;padding:2px 6px;background:rgba(16,185,129,.15);
+  border-radius:20px;color:var(--green);}
+
+/* ── BANK RUMUS ITEM ── */
+.bank-item{background:var(--bg3);border:1px solid var(--border2);border-radius:11px;
+  padding:11px 13px;margin-bottom:8px;position:relative;}
+.bank-item-top{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.bank-market{font-family:'Bebas Neue';font-size:13px;letter-spacing:1px;color:var(--gold-light);}
+.bank-type-tag{font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;
+  background:rgba(0,212,255,.12);color:var(--cyan);letter-spacing:.5px;}
+.bank-hari{font-size:9px;color:var(--muted);font-weight:700;margin-left:auto;}
+.bank-formula{font-size:10px;color:var(--muted);margin-bottom:5px;font-family:'Barlow Condensed';letter-spacing:.5px;}
+.bank-code{font-family:'Barlow Condensed';font-size:11px;color:rgba(245,158,11,.6);letter-spacing:.5px;margin-bottom:6px;}
+.bank-angka{font-family:'Bebas Neue';font-size:26px;letter-spacing:4px;color:var(--text);}
+.bank-pjg{font-size:10px;color:var(--muted);margin-left:6px;}
+.bank-row-bottom{display:flex;align-items:center;gap:7px;margin-top:6px;}
+.bank-status-ok{font-size:9px;font-weight:800;color:var(--green);}
+.bank-status-bad{font-size:9px;font-weight:800;color:#f87171;}
+
+/* ── SCAN RADAR (Tab 2) ── */
+.radar-terminal{background:#000;border:1px solid rgba(0,212,255,.2);border-radius:11px;
+  padding:12px;margin-bottom:10px;font-family:'Barlow Condensed';font-size:12px;
+  color:#94a3b8;letter-spacing:.5px;min-height:38px;display:flex;align-items:center;gap:6px;}
+.radar-terminal.scanning{color:#fbbf24;border-color:rgba(251,191,36,.3);}
+.radar-cursor{animation:blink .8s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.scan-table{width:100%;border-collapse:collapse;font-size:11px;}
+.scan-table th{padding:7px 8px;font-size:9px;font-weight:800;color:var(--muted);
+  text-align:left;border-bottom:1px solid var(--border2);text-transform:uppercase;letter-spacing:.5px;}
+.scan-table td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.03);}
+.scan-table tr:last-child td{border-bottom:none;}
+.rms-badge{font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;
+  background:rgba(124,58,237,.2);color:#a78bfa;letter-spacing:.5px;}
+.formula-code{font-family:'Barlow Condensed';font-size:12px;color:var(--cyan);letter-spacing:.3px;}
+.pred-num{font-family:'Bebas Neue';font-size:16px;letter-spacing:2px;color:var(--gold);}
+.pjg-num{font-size:11px;color:var(--muted);font-weight:700;}
+.pjg-hot{color:var(--orange);}
+.btn-save-xs{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);
+  color:var(--green);border-radius:5px;padding:3px 8px;font-size:10px;font-weight:800;
+  cursor:pointer;transition:.2s;font-family:'Nunito';}
+.btn-save-xs:hover{background:rgba(16,185,129,.3);}
+.btn-save-xs.saved{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3);color:var(--gold);}
+
+/* ── PASARAN DROPDOWN (modal list) ── */
+.pasaran-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);
+  z-index:9999;align-items:flex-end;}
+.pasaran-modal-overlay.open{display:flex;}
+.pasaran-modal-box{background:var(--bg2);border-radius:18px 18px 0 0;
+  border:1px solid var(--border);width:100%;max-width:640px;margin:0 auto;
+  max-height:70vh;overflow-y:auto;}
+.pasaran-modal-header{padding:14px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;
+  background:var(--bg2);z-index:1;}
+.pasaran-modal-title{font-family:'Bebas Neue';font-size:16px;letter-spacing:1px;color:var(--gold);}
+.pasaran-modal-close{width:28px;height:28px;border:1px solid var(--border2);border-radius:7px;
+  background:transparent;color:var(--muted);font-size:14px;cursor:pointer;}
+.pasaran-list-item{padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.03);
+  cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between;
+  transition:background .15s;}
+.pasaran-list-item:hover{background:rgba(245,158,11,.06);}
+.pasaran-list-item .p-code{font-family:'Bebas Neue';font-size:12px;color:var(--gold);letter-spacing:.5px;}
+
+/* ── MODAL TREK ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);
+  z-index:9000;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+  width:100%;max-width:520px;max-height:80vh;display:flex;flex-direction:column;}
+.modal-head{padding:14px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;}
+.modal-head h3{font-family:'Bebas Neue';font-size:16px;letter-spacing:1px;color:var(--gold);}
+.modal-close-btn{width:28px;height:28px;border:1px solid var(--border2);border-radius:7px;
+  background:transparent;color:var(--muted);font-size:14px;cursor:pointer;}
+.modal-close-btn:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.modal-action-bar{padding:10px 14px;border-bottom:1px solid var(--border2);
+  display:flex;gap:6px;flex-wrap:wrap;}
+.modal-body{overflow-y:auto;padding:14px 16px;flex:1;font-size:12px;line-height:1.8;}
+.trek-line{display:flex;gap:8px;align-items:center;padding:3px 0;
+  border-bottom:1px solid rgba(255,255,255,.03);}
+.trek-period{font-family:'Barlow Condensed';font-size:12px;color:var(--muted);letter-spacing:.5px;width:40px;}
+.trek-pred{font-family:'Bebas Neue';font-size:15px;letter-spacing:2px;color:var(--text);}
+.trek-hit{color:var(--green)!important;font-size:9px;font-weight:800;}
+
+/* ── AI ANALISA BOX ── */
+.ai-box{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.2);
+  border-radius:10px;padding:12px;margin-bottom:10px;}
+.ai-box.gold{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.25);}
+.ai-box-title{font-size:10px;font-weight:800;color:#a78bfa;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.ai-box.gold .ai-box-title{color:var(--gold);}
+.ai-box-text{font-size:12px;color:var(--text);line-height:1.65;}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border2);margin:12px 0;}
+
+/* ── BANK RUMUS AI LIST ── */
+.bank-ai-group{margin-bottom:12px;}
+.bank-ai-group-title{font-size:9px;font-weight:800;color:var(--muted);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.bank-ai-group-title::after{content:'';flex:1;height:1px;background:var(--border2);}
+.bank-ai-item{background:var(--bg3);border-radius:9px;padding:9px 11px;margin-bottom:6px;
+  display:flex;align-items:center;gap:10px;}
+.bank-ai-cat{font-size:14px;flex-shrink:0;}
+.bank-ai-name{font-size:11px;font-weight:800;color:var(--gold);margin-bottom:2px;}
+.bank-ai-formula{font-size:10px;color:var(--muted);}
+.bank-ai-hasil{font-family:'Bebas Neue';font-size:20px;letter-spacing:3px;color:var(--text);flex-shrink:0;}
+
+/* ── LOADING ── */
+.loading-wrap{text-align:center;padding:28px 16px;}
+.spinner{width:32px;height:32px;border:3px solid var(--bg3);border-top-color:var(--purple);
+  border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+.loading-dots{display:flex;gap:5px;justify-content:center;margin-top:10px;}
+.loading-dots span{width:6px;height:6px;background:var(--purple);border-radius:50%;
+  animation:dot-bounce .8s infinite;}
+.loading-dots span:nth-child(2){animation-delay:.15s;}
+.loading-dots span:nth-child(3){animation-delay:.3s;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes dot-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:32px 16px;}
+.empty-ico{font-size:36px;margin-bottom:8px;}
+.empty-text{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--bg2);border:1px solid var(--border);color:var(--text);
+  padding:10px 18px;border-radius:25px;font-size:12px;font-weight:700;
+  z-index:99999;opacity:0;transition:.3s;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.green{border-color:rgba(16,185,129,.4);color:var(--green);}
+.toast.red{border-color:rgba(220,38,38,.4);color:#f87171;}
+.toast.blue{border-color:rgba(0,212,255,.3);color:var(--cyan);}
+
+/* ── FILTER CHIPS ── */
+.filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px;}
+.chip{padding:4px 11px;border-radius:20px;font-size:10px;font-weight:800;
+  cursor:pointer;border:1px solid var(--border2);color:var(--muted);
+  background:transparent;transition:.2s;font-family:'Nunito';}
+.chip.active,.chip:hover{border-color:var(--gold);color:var(--gold);background:rgba(245,158,11,.08);}
+
+/* ── IMPORT ROW ── */
+.import-row{display:flex;gap:7px;margin-bottom:9px;}
+.import-row input{flex:1;margin-bottom:0;}
+.btn-import{padding:9px 14px;background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3);
+  color:var(--cyan);border-radius:9px;font-size:11px;font-weight:800;cursor:pointer;
+  white-space:nowrap;font-family:'Nunito';transition:.2s;flex-shrink:0;}
+.btn-import:hover{background:rgba(0,212,255,.2);}
+
+/* ── COUNT BADGE ── */
+.count-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;
+  color:var(--muted);padding:4px 10px;background:var(--bg3);border-radius:20px;
+  border:1px solid var(--border2);}
+.count-badge .num{font-family:'Bebas Neue';font-size:16px;color:var(--gold);}
+
+/* ── SELECTED BAR ── */
+.sel-bar{display:none;align-items:center;gap:8px;padding:7px 11px;
+  background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);
+  border-radius:9px;margin-bottom:9px;font-size:11px;font-weight:700;color:#a78bfa;}
+.sel-bar.active{display:flex;}
+
+/* API KEY BANNER */
+.key-banner{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);
+  border-radius:11px;padding:12px;margin-bottom:11px;}
+.key-banner.saved{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.25);}
+.key-banner-title{font-size:10px;font-weight:800;color:#a78bfa;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:8px;}
+.key-banner.saved .key-banner-title{color:var(--green);}
+.key-row{display:flex;gap:7px;}
+.key-row input{flex:1;margin-bottom:0;}
+.key-save-btn{padding:9px 14px;background:var(--gold);color:#000;border:none;
+  border-radius:9px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;
+  font-family:'Nunito';}
+.key-status{font-size:10px;color:var(--muted);margin-top:5px;}
+
+/* SECTION HEADING */
+.sec-head{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+.sec-head-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.sec-head-icon.purple{background:rgba(124,58,237,.15);}
+.sec-head-icon.gold{background:rgba(245,158,11,.15);}
+.sec-head-icon.cyan{background:rgba(0,212,255,.1);}
+.sec-head-text .title{font-family:'Barlow Condensed';font-size:16px;font-weight:700;letter-spacing:.5px;color:var(--text);}
+.sec-head-text .sub{font-size:10px;color:var(--muted);}
+
+/* FOOTER */
+.footer{text-align:center;font-size:9px;color:var(--muted);padding:16px 0;
+  border-top:1px solid var(--border);margin-top:8px;}
+</style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══ -->
+<div class="topbar">
+  <div class="logo-wrap">
+    <div class="logo-icon">WB</div>
+    <div>
+      <div class="logo-title">WONGBAGUS PRO</div>
+      <div class="logo-sub">SCANNER AI · SCANNER RUMUS · BANK RUMUS</div>
+    </div>
+  </div>
+  <div class="topbar-status" id="topbarStatus">⏳ Init...</div>
+</div>
+
+<!-- ══ NAV TABS ══ -->
+<div class="nav-bar">
+  <button class="nav-tab active" onclick="switchTab('scanner-ai')">
+    <span class="tab-ico">🧠</span>SCANNER AI
+  </button>
+  <button class="nav-tab" onclick="switchTab('bank-rumus-ai')">
+    <span class="tab-ico">🏦</span>BANK AI
+  </button>
+  <button class="nav-tab" onclick="switchTab('scanner-rumus')">
+    <span class="tab-ico">📡</span>SCANNER RMS
+  </button>
+  <button class="nav-tab" onclick="switchTab('bank-rumus')">
+    <span class="tab-ico">📂</span>BANK RMS
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — SCANNER AI (Groq)
+══════════════════════════════════════════════ -->
+<div class="page-panel active" id="panel-scanner-ai">
+<div class="page-wrap">
+
+  <!-- API Key -->
+  <div class="key-banner" id="keyBanner">
+    <div class="key-banner-title">🔑 Groq API Key</div>
+    <div class="key-row">
+      <input type="password" id="apiKeyInput" placeholder="gsk_... (Groq API Key)">
+      <button class="key-save-btn" onclick="saveApiKey()">Simpan</button>
+    </div>
+    <div class="key-status" id="keyStatus">Masukkan Groq API Key untuk mengaktifkan Scanner AI</div>
+  </div>
+
+  <!-- Form Scan -->
+  <div class="card">
+    <div class="card-title">⚡ Scanner Pro AI</div>
+
+    <div class="form-row">
+      <div>
+        <label>Pasaran</label>
+        <select id="ai-pasaran" onchange="onAiPasaranChange()">
+          <option value="">— Pilih Pasaran —</option>
+        </select>
+      </div>
+      <div>
+        <label>Target Prediksi</label>
+        <select id="ai-target">
+          <option value="2d">2D Belakang</option>
+          <option value="2d-depan">2D Depan</option>
+          <option value="3d">3D</option>
+          <option value="4d" selected>4D</option>
+          <option value="semua">Semua Format</option>
+        </select>
+      </div>
+    </div>
+    <div class="hint-line" id="aiHint"></div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <label style="margin:0">Result Terakhir (pisah koma/spasi)</label>
+      <button class="autofill-btn" onclick="aiAutoFill()">⚡ Isi Otomatis</button>
+    </div>
+    <textarea id="ai-results" rows="3" placeholder="Contoh: 4321, 7865, 2390, 5511, 8847"></textarea>
+
+    <div class="form-row">
+      <div>
+        <label>Kedalaman Analisa</label>
+        <select id="ai-depth">
+          <option value="cepat">Cepat (Dasar)</option>
+          <option value="sedang" selected>Sedang</option>
+          <option value="dalam">Dalam (Full Matrix)</option>
+        </select>
+      </div>
+      <div>
+        <label>Jumlah Rumus</label>
+        <select id="ai-jumlah">
+          <option value="3">3 Rumus</option>
+          <option value="5" selected>5 Rumus</option>
+          <option value="8">8 Rumus</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-ai" id="btnScanAI" onclick="jalankanScannerAI()">
+      🧠 Jalankan Scanner AI
+    </button>
+  </div>
+
+  <div id="aiScanResult"></div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — BANK RUMUS AI (simpan dari Scanner AI)
+══════════════════════════════════════════════ -->
+<div class="page-panel" id="panel-bank-rumus-ai">
+<div class="page-wrap">
+
+  <div class="card">
+    <div class="card-title">🏦 Bank Rumus AI</div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;">
+      <div class="count-badge">📁 <span class="num" id="bankAiCount">0</span> rumus tersimpan</div>
+      <button class="btn-sm btn-sm-red" onclick="clearBankAI()">🗑 Clear Semua</button>
+    </div>
+
+    <div class="filter-chips" id="bankAiChips"></div>
+    <div id="bankAiList"></div>
+
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — SCANNER RUMUS (Builder Manual + Auto Scan)
+══════════════════════════════════════════════ -->
+<div class="page-panel" id="panel-scanner-rumus">
+<div class="page-wrap">
+
+  <div class="card">
+    <div class="card-title">📡 Scanner Rumus Pro</div>
+
+    <!-- Row 1: Limit + Pasaran -->
+    <div class="form-row">
+      <div>
+        <label>Limit Baris</label>
+        <select id="sr-limit" onchange="srPreviewUpdate()">
+          <option value="5">5</option><option value="8">8</option>
+          <option value="10">10</option><option value="12">12</option>
+          <option value="15" selected>15</option><option value="20">20</option>
+          <option value="25">25</option><option value="30">30</option>
+        </select>
+      </div>
+      <div>
+        <label>Pasaran</label>
+        <select id="sr-pasaran-sel" onchange="onSrPasaranChange()">
+          <option value="">— Pilih Pasaran —</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 2: Hari + Target -->
+    <div class="form-row">
+      <div>
+        <label>Hari</label>
+        <select id="sr-hari" onchange="srPreviewUpdate()">
+          <option value="">Harian</option>
+          <option value="SEN">Senin</option><option value="SEL">Selasa</option>
+          <option value="RAB">Rabu</option><option value="KAM">Kamis</option>
+          <option value="JUM">Jumat</option><option value="SAB">Sabtu</option>
+          <option value="MIN">Minggu</option>
+        </select>
+      </div>
+      <div>
+        <label>Target Angka</label>
+        <select id="sr-fcol" onchange="srPreviewUpdate()">
+          <option value="e" selected>Ekor (E)</option>
+          <option value="k">Kepala (K)</option>
+          <option value="c">Cop / Tengah (C)</option>
+          <option value="a">As (A)</option>
+          <option value="ke">2D Belakang (KE)</option>
+          <option value="ck">2D Tengah (CK)</option>
+          <option value="ac">2D Depan (AC)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 2.5: Digit -->
+    <div class="form-row" style="margin-bottom:12px;">
+      <div>
+        <label>Digit Hasil</label>
+        <select id="sr-digit" onchange="srPreviewUpdate()">
+          <option value="1">1 Digit</option>
+          <option value="2" selected>2 Digit</option>
+          <option value="3">3 Digit</option>
+          <option value="4">4 Digit</option>
+          <option value="5">5 Digit</option>
+          <option value="6">6 Digit</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 3: Mode + Patah -->
+    <div class="form-row" style="margin-bottom:12px;">
+      <div>
+        <label>Mode Scan</label>
+        <select id="sr-mode" onchange="srModeChange()">
+          <option value="manual">Manual</option>
+          <option value="auto">Auto Scan</option>
+        </select>
+      </div>
+      <div>
+        <label>Patah</label>
+        <select id="sr-patah" onchange="srPreviewUpdate()">
+          <option value="0">Patah 0</option>
+          <option value="1">Patah 1</option>
+          <option value="2">Patah 2</option>
+          <option value="3">Patah 3</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ═══ FORMULA BUILDER ═══ -->
+    <div id="srFormulaBuilder">
+      <div style="font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;">
+        Elemen Rumus
+      </div>
+
+      <!-- Baris 1: Slot 1-3 (Key + Op) -->
+      <div class="rb-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:4px;">
+        <select class="rb-sel" id="rb_e1" onchange="srPreviewUpdate()"></select>
+        <select class="rb-op" id="rb_o1" onchange="srPreviewUpdate()">
+          <option value="-">-</option><option value="+">+</option><option value=".">.</option>
+        </select>
+        <select class="rb-sel" id="rb_e2" onchange="srPreviewUpdate()"></select>
+        <select class="rb-op" id="rb_o2" onchange="srPreviewUpdate()">
+          <option value="-">-</option><option value="+">+</option><option value=".">.</option>
+        </select>
+        <select class="rb-sel" id="rb_e3" onchange="srPreviewUpdate()"></select>
+        <select class="rb-op" id="rb_o3" onchange="srPreviewUpdate()">
+          <option value="-">-</option><option value="+">+</option><option value=".">.</option>
+        </select>
+      </div>
+
+      <!-- Baris 2: Slot 4 + Op + Modifier -->
+      <div class="rb-grid" style="display:grid;grid-template-columns:1fr 0.6fr 1fr;gap:4px;margin-bottom:10px;">
+        <select class="rb-sel" id="rb_e4" onchange="srPreviewUpdate()"></select>
+        <select class="rb-op" id="rb_o4" onchange="srPreviewUpdate()">
+          <option value="-">-</option><option value="+">+</option><option value=".">.</option>
+        </select>
+        <select class="rb-sel" id="rb_mod" onchange="srPreviewUpdate()">
+          <option value="-">-</option>
+          <option value="ml">ml</option><option value="ix">ix</option>
+          <option value="mb">mb</option><option value="ty">ty</option>
+          <option value="m0">m0</option><option value="m1">m1</option>
+          <option value="m2">m2</option><option value="m3">m3</option>
+          <option value="m4">m4</option><option value="m5">m5</option>
+          <option value="m6">m6</option><option value="m7">m7</option>
+          <option value="m8">m8</option><option value="m9">m9</option>
+          <option value="m10">m10</option><option value="m11">m11</option>
+          <option value="m12">m12</option><option value="m13">m13</option>
+          <option value="m14">m14</option><option value="m15">m15</option>
+          <option value="m16">m16</option><option value="m17">m17</option>
+          <option value="m18">m18</option><option value="m19">m19</option>
+        </select>
+      </div>
+
+      <!-- Referensi toggle -->
+      <div style="margin-bottom:10px;">
+        <label>Referensi</label>
+        <select id="sr-ref" onchange="srRefToggle()">
+          <option value="hide">Sembunyikan Referensi</option>
+          <option value="show">Tampilkan Referensi</option>
+        </select>
+      </div>
+
+      <!-- Nav rumus -->
+      <div style="display:flex;gap:7px;margin-bottom:10px;">
+        <button class="btn btn-outline btn-sm" style="flex:1;padding:9px;" onclick="navRumus(-1)">&#171; Prev</button>
+        <button class="btn btn-outline btn-sm" style="flex:1;padding:9px;" onclick="navRumus(1)">Next &#187;</button>
+        <button class="btn btn-gold btn-sm" style="flex:1;padding:9px;" onclick="bukaRumus()">🔓 Terbuka</button>
+      </div>
+
+      <!-- Preview box -->
+      <div id="rbPreviewBox" style="background:#000;border:1px solid rgba(0,212,255,.2);border-radius:10px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;gap:10px;min-height:46px;">
+        <div style="flex:1;">
+          <div style="font-size:9px;color:var(--muted);font-weight:800;margin-bottom:3px;">FORMULA</div>
+          <div id="rbFormulaText" style="font-family:'Barlow Condensed';font-size:14px;color:var(--cyan);letter-spacing:.5px;">—</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:9px;color:var(--muted);font-weight:800;margin-bottom:1px;">PRED</div>
+          <div id="rbPredResult" style="font-family:'Bebas Neue';font-size:26px;color:var(--gold);letter-spacing:4px;">--</div>
+        </div>
+      </div>
+
+      <!-- Referensi history (hidden by default) -->
+      <div id="srRefBox" style="display:none;background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:10px;margin-bottom:8px;max-height:160px;overflow-y:auto;">
+        <div style="font-size:9px;color:var(--muted);font-weight:800;margin-bottom:6px;">REFERENSI HISTORY</div>
+        <div id="srRefContent" style="font-size:11px;line-height:1.8;color:var(--text);"></div>
+      </div>
+
+      <!-- Copy buttons -->
+      <div style="display:flex;gap:7px;margin-bottom:8px;">
+        <button class="btn btn-outline btn-sm" style="flex:1;padding:9px;font-size:11px;" onclick="copyRumusTeks()">📋 COPY RUMUS</button>
+        <button class="btn btn-sm btn-sm-cyan" style="flex:1;padding:9px;font-size:11px;" onclick="copyRumusCode()">&lt;/&gt; COPY CODE</button>
+      </div>
+
+      <!-- Save ke bank -->
+      <button class="btn btn-gold" onclick="saveRumusManualToBank()">🔖 Simpan ke Bank Rumus</button>
+    </div>
+
+    <!-- ═══ AUTO SCAN PANEL ═══ -->
+    <div id="srAutoPanel" style="display:none;">
+      <div style="display:flex;gap:7px;margin-bottom:8px;">
+        <div style="flex:1;">
+          <label>Target Cari</label>
+          <select id="sr-target">
+            <option value="5">5 Rumus</option>
+            <option value="10" selected>10 Rumus</option>
+            <option value="15">15 Rumus</option>
+            <option value="20">20 Rumus</option>
+          </select>
+        </div>
+        <div style="flex:1;display:flex;align-items:flex-end;">
+          <button class="btn btn-scan-radar" id="srScanBtn" onclick="toggleAutoScan()" style="margin:0;">
+            📡 SCAN
+          </button>
+        </div>
+      </div>
+
+      <!-- Terminal -->
+      <div class="radar-terminal" id="radarTerminal">
+        <span>&gt;_</span>
+        <span id="radarText">Siap memulai Auto Scan...</span>
+        <span class="radar-cursor">█</span>
+      </div>
+
+      <!-- Tabel hasil auto scan -->
+      <div style="overflow-x:auto;margin-top:8px;">
+        <table class="scan-table" id="srTable">
+          <thead>
+            <tr>
+              <th>FORMULA</th><th>PRED</th><th>PJG</th><th>HIT%</th><th>AKSI</th>
+            </tr>
+          </thead>
+          <tbody id="srTableBody">
+            <tr><td colspan="5" style="padding:20px;color:var(--muted);font-size:11px;text-align:center;">Klik SCAN untuk memulai...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn btn-outline btn-sm" style="width:auto;padding:9px 16px;" onclick="clearScanResults()">✕ Clear</button>
+        <button class="btn btn-gold" style="flex:1;" onclick="saveAllToBank()">🔖 Simpan Semua ke Bank</button>
+      </div>
+    </div>
+
+    <!-- Data info bar -->
+    <div id="srDataBar" style="display:none;background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.15);border-radius:9px;padding:8px 11px;margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span style="font-size:9px;color:var(--muted);font-weight:800;">RESULT:</span>
+      <span id="srRealResult" style="font-family:'Bebas Neue';font-size:20px;color:var(--gold);letter-spacing:3px;padding:2px 7px;background:rgba(245,158,11,.1);border-radius:5px;">----</span>
+      <span id="srHistCount" style="font-size:10px;color:var(--cyan);font-weight:800;padding:2px 7px;background:rgba(0,212,255,.08);border-radius:4px;">0 data</span>
+      <span id="srDataInfo" style="font-size:10px;color:var(--muted);flex:1;"></span>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — BANK RUMUS (scanner rumus)
+══════════════════════════════════════════════ -->
+<div class="page-panel" id="panel-bank-rumus">
+<div class="page-wrap">
+
+  <div class="card">
+    <div class="card-title">📂 Bank Rumus Kode</div>
+
+    <!-- Import -->
+    <div style="font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Import Kode Rumus</div>
+    <div class="import-row">
+      <input type="text" id="importInput" placeholder="Contoh: #HKG_ai_J1m3ai_L50-P0-D5_X8KP">
+      <button class="btn-import" onclick="importRumusKode()">⚡ IMPORT</button>
+    </div>
+    <div id="importMsg" style="font-size:10px;font-weight:700;min-height:14px;margin-bottom:7px;"></div>
+
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <div class="count-badge">📁 <span class="num" id="bankKodeCount">0</span> rumus</div>
+      <select id="bankKodeFilter" onchange="renderBankKode()" style="width:auto;flex:1;margin:0;font-size:11px;padding:5px 9px;">
+        <option value="">— Semua Pasaran —</option>
+        <option value="HKG">#HKG</option><option value="SGP">#SGP</option>
+        <option value="SYD">#SYD</option><option value="HKLT">#HKLT</option>
+        <option value="TWN">#TWN</option><option value="JPN">#JPN</option>
+      </select>
+      <button class="btn-sm btn-sm-red" onclick="clearBankKode()">🗑</button>
+    </div>
+
+    <div class="sel-bar" id="selBar">
+      <span>☑ <span id="selCount">0</span> dipilih</span>
+      <button class="btn-sm btn-sm-red" onclick="deleteSelected()" style="margin-left:auto;">🗑 Hapus</button>
+    </div>
+
+    <div id="bankKodeEmpty" class="empty-state" style="display:none;">
+      <div class="empty-ico">📂</div>
+      <div class="empty-text">Belum ada rumus.<br>Gunakan Scanner Rumus untuk mencari.</div>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table class="scan-table" id="bankKodeTable">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="chkAll" onchange="toggleAllChk(this)" style="width:auto;margin:0;padding:0;"></th>
+            <th>TIPE</th><th>HARI</th><th>ANGKA</th><th>P</th><th>STATUS</th><th>AKSI</th>
+          </tr>
+        </thead>
+        <tbody id="bankKodeBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+<!-- ══ MODAL PASARAN SCANNER ══ -->
+<div class="pasaran-modal-overlay" id="pasaranModalOverlay" onclick="closePasaranModal(event)">
+  <div class="pasaran-modal-box">
+    <div class="pasaran-modal-header">
+      <div class="pasaran-modal-title">Pilih Pasaran</div>
+      <button class="pasaran-modal-close" onclick="closePasaranModalDirect()">✕</button>
+    </div>
+    <div id="pasaranModalList"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL TREK ══ -->
+<div class="modal-overlay" id="trekModal" onclick="closeTrekModal(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="trekTitle">Detail Trek</h3>
+      <button class="modal-close-btn" onclick="closeTrekModalDirect()">✕</button>
+    </div>
+    <div class="modal-action-bar">
+      <button class="btn-sm btn-sm-red" onclick="deleteFromModal()">🗑 Hapus</button>
+      <button class="btn-sm btn-sm-gold" onclick="updateStatusFromModal()">✔ Tandai OK</button>
+    </div>
+    <div class="modal-body" id="trekBody"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL DETAIL AI ══ -->
+<div class="modal-overlay" id="aiDetailModal" onclick="closeAiDetailModal(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="aiDetailTitle">Detail Prediksi</h3>
+      <button class="modal-close-btn" onclick="closeAiDetailModalDirect()">✕</button>
+    </div>
+    <div class="modal-action-bar">
+      <button class="btn-sm btn-sm-red" onclick="deleteAiItemFromModal()">🗑 Hapus</button>
+      <button class="btn-sm btn-sm-cyan" onclick="copyAiDetailFromModal()">📋 Copy</button>
+    </div>
+    <div class="modal-body" id="aiDetailBody"></div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<!-- WB Data Module -->
+<script>
+/* wb_data.js — embedded */
+/**
+ * wb_data.js — WongBagus Prediction · Shared Data Module
+ * ========================================================
+ * Dipakai oleh SEMUA halaman: index.html, rekap_2d-1.html,
+ * bola_merah.html, rekap_3d.html, rekap_4d.html, pola_sgp.html,
+ * kalender_togel.html, bank_rumus.html, dll.
+ *
+ * CARA PAKAI (di tiap halaman, sebelum script utama):
+ *   <script src="./wb_data.js"><\/script>
+ *
+ * API publik:
+ *   WBData.getAll()            → { hk:{result,status,updated,name,...}, ..., _meta:{} }
+ *   WBData.get(id)             → entry untuk 1 pasaran, atau null
+ *   WBData.getResult(id)       → string 4-digit / '----' / null
+ *   WBData.onUpdate(callback)  → register listener; dipanggil setiap data berubah
+ *   WBData.offUpdate(callback) → hapus listener
+ *   WBData.isFresh()           → true jika cache < 90 menit
+ *   WBData.metaUpdated()       → string timestamp terakhir update
+ *   WBData.MARKETS             → array definisi 65 pasaran (readonly)
+ *   WBData.KEYWORD_MAP         → array keyword→id mapping
+ *
+ * index.html memanggil WBData._write(rj) setelah dapat data
+ * dari result.json / paito-harian. Halaman lain HANYA membaca.
+ */
+
+(function(global) {
+  'use strict';
+
+  // ── Storage key ─────────────────────────────────────────────
+  const CACHE_KEY   = 'wb_rj_v3';        // sama dg index.html lama
+  const SHARED_KEY  = 'wb_shared_v1';    // kunci baru yg dipakai halaman lain
+  const CACHE_TTL   = 90 * 60 * 1000;   // 90 menit
+
+  // ── Internal state ──────────────────────────────────────────
+  let _data   = null;   // object result.json terakhir
+  let _ts     = 0;      // epoch ms saat data ditulis
+  let _listeners = [];
+
+  // ── 65 PASARAN definisi ─────────────────────────────────────
+  const MARKETS = [
+    // ASIA UTAMA
+    {id:'hk',   flag:'🇭🇰',name:'Hongkong',       short:'HK',    time:'23:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-hongkong-pools/',         wb:'hongkong-pools'},
+    {id:'hkl',  flag:'🇭🇰',name:'HK Lotto',       short:'HKL',   time:'23:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-hklotto/',                 wb:''},
+    {id:'sgp',  flag:'🇸🇬',name:'Singapore',      short:'SGP',   time:'17:40',days:'Sen,Rab,Kam,Sab,Min', an:'/data-pengeluaran-togel-singapore/',       wb:'singapore'},
+    {id:'sdy',  flag:'🇦🇺',name:'Sydney Pools',   short:'SDY',   time:'13:45',days:'Setiap Hari', an:'/data-pengeluaran-togel-sydney-pools/',           wb:'sydney-pools'},
+    {id:'sdl',  flag:'🇦🇺',name:'Sydney Lotto',   short:'SDL',   time:'13:45',days:'Sen-Sab',      an:'/data-pengeluaran-togel-sdlotto/',                wb:'sdlotto'},
+    {id:'kam',  flag:'🇰🇭',name:'Kamboja',        short:'KAM',   time:'11:50',days:'Setiap Hari', an:'/data-pengeluaran-togel-magnum-cambodia/',         wb:'magnum-cambodia'},
+    {id:'bull', flag:'🇳🇿',name:'Bullseye NZ',    short:'BULL',  time:'13:10',days:'Setiap Hari', an:'/data-pengeluaran-togel-bullseye/',                wb:'bullseye'},
+    {id:'chn',  flag:'🇨🇳',name:'China Pools',    short:'CHN',   time:'15:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-chinapools/',              wb:'chinapools'},
+    {id:'jpn',  flag:'🇯🇵',name:'Japan',          short:'JPN',   time:'17:20',days:'Setiap Hari', an:'/data-pengeluaran-togel-japan/',                   wb:'japan'},
+    {id:'twn',  flag:'🇹🇼',name:'Taiwan',         short:'TWN',   time:'20:45',days:'Setiap Hari', an:'/data-pengeluaran-togel-taiwan/',                  wb:'taiwan'},
+    {id:'pcso', flag:'🇵🇭',name:'PCSO',           short:'PCSO',  time:'20:10',days:'Setiap Hari', an:'/data-pengeluaran-togel-pcso/',                    wb:''},
+    // TOTO MACAU
+    {id:'mac1', flag:'🇲🇴',name:'Toto Macau 13',  short:'MAC13', time:'13:10',days:'Setiap Hari', an:'/data-pengeluaran-togel-toto-macau-1/',            wb:''},
+    {id:'mac2', flag:'🇲🇴',name:'Toto Macau 16',  short:'MAC16', time:'16:10',days:'Setiap Hari', an:'/data-pengeluaran-togel-toto-macau-2/',            wb:''},
+    {id:'mac3', flag:'🇲🇴',name:'Toto Macau 19',  short:'MAC19', time:'19:10',days:'Setiap Hari', an:'/data-pengeluaran-togel-toto-macau-3/',            wb:''},
+    {id:'mac4', flag:'🇲🇴',name:'Toto Macau 22',  short:'MAC22', time:'22:10',days:'Setiap Hari', an:'/data-pengeluaran-togel-toto-macau-4/',            wb:''},
+    {id:'mac5', flag:'🇲🇴',name:'Toto Macau 00',  short:'MAC00', time:'00:11',days:'Setiap Hari', an:'/data-pengeluaran-togel-toto-macau-5/',            wb:''},
+    {id:'mac6', flag:'🇲🇴',name:'Toto Macau 23',  short:'MAC23', time:'23:10',days:'Setiap Hari', an:'/data-pengeluaran-togel-toto-macau-6/',            wb:''},
+    // MOROCCO
+    {id:'mrq3',  flag:'🇲🇦',name:'Morocco 03:00', short:'MRQ3',  time:'03:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-morocco-quatro-03-00-wib/', wb:''},
+    {id:'mrq18', flag:'🇲🇦',name:'Morocco 18:00', short:'MRQ18', time:'18:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-morocco-quatro-18-00-wib/', wb:''},
+    {id:'mrq21', flag:'🇲🇦',name:'Morocco 21:00', short:'MRQ21', time:'21:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-morocco-quatro-21-00-wib/', wb:''},
+    {id:'mrq23', flag:'🇲🇦',name:'Morocco 23:59', short:'MRQ23', time:'23:59',days:'Setiap Hari', an:'/data-pengeluaran-togel-morocco-quatro-23-59-wib/', wb:''},
+    // GERMANY
+    {id:'ger',  flag:'🇩🇪',name:'Germany Plus5',  short:'GER',   time:'01:10',days:'Setiap Hari', an:'/data-pengeluaran-togel-germany-plus5/',           wb:''},
+    // OREGON
+    {id:'or4',  flag:'🇺🇸',name:'Oregon 04:00',   short:'OR4',   time:'04:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-oregon-04-00-wib/',        wb:''},
+    {id:'or7',  flag:'🇺🇸',name:'Oregon 07:00',   short:'OR7',   time:'07:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-oregon-07-00-wib/',        wb:''},
+    {id:'or10', flag:'🇺🇸',name:'Oregon 10:00',   short:'OR10',  time:'10:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-oregon-10-00-wib/',        wb:''},
+    {id:'or13', flag:'🇺🇸',name:'Oregon 13:00',   short:'OR13',  time:'13:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-oregon-13-00-wib/',        wb:''},
+    // NORTH CAROLINA
+    {id:'ncd',  flag:'🇺🇸',name:'NC Day',         short:'NCD',   time:'03:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-north-carolina-day/',      wb:'north-carolina-day'},
+    {id:'nce',  flag:'🇺🇸',name:'NC Evening',     short:'NCE',   time:'11:22',days:'Setiap Hari', an:'/data-pengeluaran-togel-north-carolina-evening/',  wb:''},
+    // GEORGIA
+    {id:'geom', flag:'🇺🇸',name:'Georgia Mid',    short:'GEOM',  time:'00:29',days:'Setiap Hari', an:'/data-pengeluaran-togel-georgia-midday/',          wb:''},
+    {id:'geoe', flag:'🇺🇸',name:'Georgia Eve',    short:'GEOE',  time:'07:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-georgia-evening/',         wb:''},
+    {id:'geon', flag:'🇺🇸',name:'Georgia Night',  short:'GEON',  time:'11:34',days:'Setiap Hari', an:'/data-pengeluaran-togel-georgia-night/',           wb:''},
+    // TEXAS
+    {id:'txd',  flag:'🇺🇸',name:'Texas Day',      short:'TXD',   time:'01:27',days:'Setiap Hari', an:'/data-pengeluaran-togel-texas-day/',               wb:''},
+    {id:'txmr', flag:'🇺🇸',name:'Texas Morning',  short:'TXMR',  time:'22:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-texas-morning/',           wb:''},
+    {id:'txe',  flag:'🇺🇸',name:'Texas Evening',  short:'TXE',   time:'09:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-texas-evening/',           wb:''},
+    {id:'txn',  flag:'🇺🇸',name:'Texas Night',    short:'TXN',   time:'14:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-texas-night/',             wb:''},
+    // NEW YORK
+    {id:'nyd',  flag:'🇺🇸',name:'New York Mid',   short:'NYD',   time:'01:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-new-york-midday/',         wb:''},
+    {id:'nye',  flag:'🇺🇸',name:'New York Eve',   short:'NYE',   time:'10:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-new-york-evening/',        wb:''},
+    // NEW JERSEY
+    {id:'njm',  flag:'🇺🇸',name:'NJ Midday',      short:'NJM',   time:'01:57',days:'Setiap Hari', an:'/data-pengeluaran-togel-new-jersey-midday/',       wb:''},
+    {id:'nje',  flag:'🇺🇸',name:'NJ Evening',     short:'NJE',   time:'10:57',days:'Setiap Hari', an:'/data-pengeluaran-togel-new-jersey-evening/',      wb:''},
+    // FLORIDA
+    {id:'flm',  flag:'🇺🇸',name:'Florida Mid',    short:'FLM',   time:'01:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-florida-midday/',          wb:''},
+    {id:'fle',  flag:'🇺🇸',name:'Florida Eve',    short:'FLE',   time:'11:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-florida-evening/',         wb:''},
+    // ILLINOIS
+    {id:'ilm',  flag:'🇺🇸',name:'Illinois Mid',   short:'ILM',   time:'02:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-illinois-midday/',         wb:''},
+    {id:'ile',  flag:'🇺🇸',name:'Illinois Eve',   short:'ILE',   time:'11:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-illinois-evening/',        wb:''},
+    // INDIANA
+    {id:'indm', flag:'🇺🇸',name:'Indiana Mid',    short:'INDM',  time:'02:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-indiana-midday/',          wb:''},
+    {id:'inde', flag:'🇺🇸',name:'Indiana Eve',    short:'INDE',  time:'11:29',days:'Setiap Hari', an:'/data-pengeluaran-togel-indiana-evening/',         wb:''},
+    // KENTUCKY
+    {id:'kym',  flag:'🇺🇸',name:'Kentucky Mid',   short:'KYM',   time:'01:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-kentucky-midday/',         wb:''},
+    {id:'kye',  flag:'🇺🇸',name:'Kentucky Eve',   short:'KYE',   time:'10:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-kentucky-evening/',        wb:''},
+    // MARYLAND
+    {id:'mdm',  flag:'🇺🇸',name:'Maryland Mid',   short:'MDM',   time:'01:55',days:'Setiap Hari', an:'/data-pengeluaran-togel-maryland-midday/',         wb:''},
+    {id:'mde',  flag:'🇺🇸',name:'Maryland Eve',   short:'MDE',   time:'10:57',days:'Setiap Hari', an:'/data-pengeluaran-togel-maryland-evening/',        wb:''},
+    // MICHIGAN
+    {id:'mim',  flag:'🇺🇸',name:'Michigan Mid',   short:'MIM',   time:'01:28',days:'Setiap Hari', an:'/data-pengeluaran-togel-michigan-midday/',         wb:''},
+    {id:'mie',  flag:'🇺🇸',name:'Michigan Eve',   short:'MIE',   time:'10:28',days:'Setiap Hari', an:'/data-pengeluaran-togel-michigan-evening/',        wb:''},
+    // MISSOURI
+    {id:'mom',  flag:'🇺🇸',name:'Missouri Mid',   short:'MOM',   time:'01:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-missouri-midday/',         wb:''},
+    {id:'moe',  flag:'🇺🇸',name:'Missouri Eve',   short:'MOE',   time:'10:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-missouri-evening/',        wb:''},
+    // WASHINGTON DC
+    {id:'wdm',  flag:'🇺🇸',name:'WDC Midday',     short:'WDM',   time:'01:50',days:'Setiap Hari', an:'/data-pengeluaran-togel-washington-dc-midday/',    wb:''},
+    {id:'wde',  flag:'🇺🇸',name:'WDC Evening',    short:'WDE',   time:'10:50',days:'Setiap Hari', an:'/data-pengeluaran-togel-washington-dc-evening/',   wb:''},
+    // CONNECTICUT
+    {id:'ctd',  flag:'🇺🇸',name:'Connecticut Day', short:'CTD',  time:'02:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-connecticut-day/',         wb:''},
+    {id:'ctn',  flag:'🇺🇸',name:'Connecticut Night',short:'CTN', time:'11:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-connecticut-night/',        wb:''},
+    // VIRGINIA
+    {id:'vad',  flag:'🇺🇸',name:'Virginia Day',   short:'VAD',   time:'02:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-virginia-day/',            wb:''},
+    {id:'van',  flag:'🇺🇸',name:'Virginia Night', short:'VAN',   time:'11:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-virginia-night/',           wb:''},
+    // TENNESSEE
+    {id:'tnm',  flag:'🇺🇸',name:'Tennessee Mid',  short:'TNM',   time:'01:29',days:'Setiap Hari', an:'/data-pengeluaran-togel-tennesse-midday/',         wb:''},
+    {id:'tne',  flag:'🇺🇸',name:'Tennessee Eve',  short:'TNE',   time:'10:29',days:'Setiap Hari', an:'/data-pengeluaran-togel-tennesse-evening/',        wb:''},
+    {id:'tnmr', flag:'🇺🇸',name:'Tennessee Morning',short:'TNMR',time:'22:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-tennesse-morning/',        wb:''},
+    // LAINNYA
+    {id:'cal',  flag:'🇺🇸',name:'California',     short:'CAL',   time:'10:00',days:'Setiap Hari', an:'/data-pengeluaran-togel-california/',              wb:''},
+    {id:'wie',  flag:'🇺🇸',name:'Wisconsin Eve',  short:'WIE',   time:'10:30',days:'Setiap Hari', an:'/data-pengeluaran-togel-wisconsin-evening/',       wb:''},
+  ];
+
+  // ── KEYWORD MAP (untuk parse paito-harian) ──────────────────
+  const KEYWORD_MAP = [
+    ['hongkong pool','hk'],['hk pools','hk'],['hk lotto','hkl'],['hklotto','hkl'],
+    ['singapore','sgp'],
+    ['sydney pools','sdy'],['sydney pool','sdy'],['sydney lotto','sdl'],['sdlotto','sdl'],
+    ['magnum cambodia','kam'],['kamboja','kam'],['cambodia','kam'],
+    ['bullseye','bull'],
+    ['china pool','chn'],['chinapool','chn'],
+    ['japan','jpn'],['taiwan','twn'],['pcso','pcso'],
+    ['toto macau 1','mac1'],['macau 13','mac1'],
+    ['toto macau 2','mac2'],['macau 16','mac2'],
+    ['toto macau 3','mac3'],['macau 19','mac3'],
+    ['toto macau 4','mac4'],['macau 22','mac4'],
+    ['toto macau 5','mac5'],['macau 00','mac5'],
+    ['toto macau 6','mac6'],['macau 23','mac6'],
+    ['morocco quatro 03','mrq3'],['morocco 03','mrq3'],
+    ['morocco quatro 18','mrq18'],['morocco 18','mrq18'],
+    ['morocco quatro 21','mrq21'],['morocco 21','mrq21'],
+    ['morocco quatro 23','mrq23'],['morocco 23','mrq23'],
+    ['germany','ger'],
+    ['oregon 04','or4'],['oregon 07','or7'],['oregon 10','or10'],['oregon 13','or13'],
+    ['north carolina day','ncd'],['nc day','ncd'],
+    ['north carolina evening','nce'],['nc evening','nce'],
+    ['georgia midday','geom'],['georgia mid','geom'],
+    ['georgia evening','geoe'],['georgia eve','geoe'],
+    ['georgia night','geon'],
+    ['texas morning','txmr'],['texas day','txd'],['texas evening','txe'],['texas night','txn'],
+    ['new york midday','nyd'],['new york evening','nye'],
+    ['new jersey midday','njm'],['nj midday','njm'],
+    ['new jersey evening','nje'],['nj evening','nje'],
+    ['florida midday','flm'],['florida evening','fle'],
+    ['illinois midday','ilm'],['illinois evening','ile'],
+    ['indiana midday','indm'],['indiana evening','inde'],
+    ['kentucky midday','kym'],['kentucky evening','kye'],
+    ['maryland midday','mdm'],['maryland evening','mde'],
+    ['michigan midday','mim'],['michigan evening','mie'],
+    ['missouri midday','mom'],['missouri evening','moe'],
+    ['washington dc midday','wdm'],['wdc midday','wdm'],
+    ['washington dc evening','wde'],['wdc evening','wde'],
+    ['connecticut day','ctd'],['connecticut night','ctn'],
+    ['virginia day','vad'],['virginia night','van'],
+    ['tennesse midday','tnm'],['tennessee midday','tnm'],
+    ['tennesse evening','tne'],['tennessee evening','tne'],
+    ['tennesse morning','tnmr'],['tennessee morning','tnmr'],
+    ['california','cal'],['wisconsin evening','wie'],
+  ];
+
+  // ── Result.json URLs (fallback cascade) ─────────────────────
+  const RESULT_JSON_URLS = [
+    './result.json',
+    'https://alifavif-cmd.github.io/-WONGBAGUS-PREDICTION-/result.json',
+    'https://raw.githubusercontent.com/alifavif-cmd/-WONGBAGUS-PREDICTION-/main/result.json',
+  ];
+
+  // ── Paito Harian URL ─────────────────────────────────────────
+  const PAITO_HARIAN_URL = 'https://angkanet18.com/paito-harian/';
+
+  // ── CORS proxy list ──────────────────────────────────────────
+  const PROXIES = [
+    u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u),
+    u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+    u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u),
+  ];
+
+  // ── Helpers ──────────────────────────────────────────────────
+  const FAKE_PAT = [
+    /^1234$/,/^2345$/,/^3456$/,/^4567$/,/^5678$/,
+    /^6789$/,/^7890$/,/^8901$/,/^9012$/,/^0123$/,/^(\d)\1{3}$/,
+  ];
+
+  function isFake(r) {
+    if (!/^\d{4}$/.test(r)) return true;
+    const n = parseInt(r, 10);
+    if (n >= 1800 && n <= 2099) return true;
+    return FAKE_PAT.some(p => p.test(r));
+  }
+
+  function matchMarket(text) {
+    const tl = text.toLowerCase();
+    for (const [kw, key] of KEYWORD_MAP) { if (tl.includes(kw)) return key; }
+    return null;
+  }
+
+  // ── localStorage helpers ─────────────────────────────────────
+  function _save(rj) {
+    try {
+      const payload = { ts: Date.now(), rj };
+      localStorage.setItem(CACHE_KEY,  JSON.stringify(payload));
+      localStorage.setItem(SHARED_KEY, JSON.stringify(payload));
+    } catch (e) {}
+  }
+
+  function _load() {
+    // Coba SHARED_KEY dulu (lebih fresh), lalu CACHE_KEY lama
+    for (const key of [SHARED_KEY, CACHE_KEY]) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) continue;
+        const { ts, rj } = JSON.parse(raw);
+        if (Date.now() - ts > CACHE_TTL) continue;
+        return { ts, rj };
+      } catch (e) {}
+    }
+    return null;
+  }
+
+  // ── Internal write (dipanggil index.html) ────────────────────
+  function _write(rj) {
+    if (!rj || typeof rj !== 'object') return;
+    _data = rj;
+    _ts   = Date.now();
+    _save(rj);
+    _notifyListeners();
+  }
+
+  // ── Notifikasi listeners ─────────────────────────────────────
+  function _notifyListeners() {
+    for (const cb of _listeners) {
+      try { cb(_data); } catch (e) {}
+    }
+  }
+
+  // ── Fetch result.json ─────────────────────────────────────────
+  async function _fetchResultJson(url) {
+    try {
+      const res = await Promise.race([
+        fetch(url, { cache: 'no-cache' }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 10000)),
+      ]);
+      if (!res.ok) return null;
+      return await res.json();
+    } catch (e) { return null; }
+  }
+
+  // ── Fetch via CORS proxy ──────────────────────────────────────
+  async function _proxyFetch(url) {
+    for (const makeProxy of PROXIES) {
+      try {
+        const res = await Promise.race([
+          fetch(makeProxy(url)),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 10000)),
+        ]);
+        if (!res.ok) continue;
+        const data = await res.json();
+        const html = typeof data === 'string' ? data : (data.contents || data.data || '');
+        if (html && html.length > 100) return html;
+      } catch (e) {}
+    }
+    return null;
+  }
+
+  // ── Parse paito-harian HTML → {id: result4digit} ─────────────
+  function _parsePaitoHarian(html) {
+    const found = {};
+    if (!html || html.length < 500) return found;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Strategy 1: container dengan heading
+    const containers = [...doc.querySelectorAll('section,div,article,li')].filter(el => {
+      const cls = (el.className || '').toLowerCase();
+      return /market|pasaran|paito|result|item|card|pool/.test(cls);
+    });
+    for (const sec of containers) {
+      const hEl = sec.querySelector('h1,h2,h3,h4,h5,strong');
+      if (!hEl) continue;
+      const key = matchMarket(hEl.textContent || '');
+      if (!key || found[key]) continue;
+      for (const tag of sec.querySelectorAll('span,td,div,b,p')) {
+        const t = (tag.textContent || '').trim();
+        if (/^\d{4}$/.test(t) && !isFake(t)) { found[key] = t; break; }
+      }
+    }
+
+    // Strategy 2: .paito-row-item grouped by parent
+    if (Object.keys(found).length < 10) {
+      const rowMap = new Map();
+      for (const item of doc.querySelectorAll('.paito-row-item')) {
+        const pid = item.parentElement;
+        if (!rowMap.has(pid)) rowMap.set(pid, { texts: [], result: null });
+        const t = (item.textContent || '').trim();
+        rowMap.get(pid).texts.push(t);
+        if (!rowMap.get(pid).result && /^\d{4}$/.test(t) && !isFake(t))
+          rowMap.get(pid).result = t;
+      }
+      for (const [, info] of rowMap) {
+        if (!info.result) continue;
+        const key = matchMarket(info.texts.join(' '));
+        if (key && !found[key]) found[key] = info.result;
+      }
+    }
+
+    // Strategy 3: scan tr/li
+    if (Object.keys(found).length < 5) {
+      let count = 0;
+      for (const block of doc.querySelectorAll('tr,li')) {
+        if (++count > 3000) break;
+        const t = (block.textContent || '').trim();
+        if (!/^\d{4}$/.test(t) || isFake(t)) continue;
+        const pTxt = block.parentElement ? (block.parentElement.textContent || '') : '';
+        const key = matchMarket(pTxt);
+        if (key && !found[key]) found[key] = t;
+      }
+    }
+    return found;
+  }
+
+  /**
+   * fetchFromPaitoHarian — halaman lain bisa panggil ini
+   * untuk refresh data tanpa perlu buka index.html.
+   * Fallback: result.json → paito-harian → data lama cache.
+   */
+  async function fetchFromPaitoHarian() {
+    // 1. Coba result.json
+    for (const url of RESULT_JSON_URLS) {
+      const rj = await _fetchResultJson(url + '?t=' + Date.now());
+      if (rj && (rj._meta || Object.keys(rj).length > 5)) {
+        _write(rj);
+        console.log('[WBData] result.json OK:', url);
+        return rj;
+      }
+    }
+
+    // 2. Coba paito-harian
+    console.log('[WBData] Fetching paito-harian...');
+    const html = await _proxyFetch(PAITO_HARIAN_URL);
+    const found = _parsePaitoHarian(html || '');
+    const count = Object.keys(found).length;
+    console.log('[WBData] paito-harian:', count, 'pasaran');
+
+    if (count >= 5) {
+      const now = new Date().toLocaleTimeString('id-ID');
+      const rj = {
+        _meta: { updated: now, date: '', total: MARKETS.length, source: 'paito-harian' },
+      };
+      for (const m of MARKETS) {
+        const r = found[m.id];
+        if (r && /^\d{4}$/.test(r) && !isFake(r)) {
+          rj[m.id] = { result: r, status: 'sudah', updated: now, name: m.name };
+        }
+      }
+      _write(rj);
+      return rj;
+    }
+
+    // 3. Return data cache lama (mungkin stale, tapi lebih baik dari kosong)
+    return _data;
+  }
+
+  // ── Init: muat cache saat script dimuat ─────────────────────
+  (function _init() {
+    const cached = _load();
+    if (cached) {
+      _data = cached.rj;
+      _ts   = cached.ts;
+      console.log('[WBData] Cache loaded, age:', Math.round((Date.now() - _ts) / 60000), 'menit');
+    }
+
+    // Listen untuk update dari tab lain (index.html di tab berbeda)
+    try {
+      window.addEventListener('storage', function(e) {
+        if (e.key !== SHARED_KEY) return;
+        try {
+          const { ts, rj } = JSON.parse(e.newValue);
+          if (ts > _ts) {
+            _data = rj;
+            _ts   = ts;
+            console.log('[WBData] Data updated from another tab');
+            _notifyListeners();
+          }
+        } catch (err) {}
+      });
+    } catch (e) {}
+  })();
+
+  // ── Public API ───────────────────────────────────────────────
+  global.WBData = {
+    /** Semua data result.json terakhir */
+    getAll() { return _data; },
+
+    /** Entry untuk 1 pasaran, atau null */
+    get(id) { return _data ? (_data[id] || null) : null; },
+
+    /** Result 4-digit untuk 1 pasaran, atau '----' / null */
+    getResult(id) {
+      const e = this.get(id);
+      if (!e) return null;
+      const r = String(e.result || '');
+      return /^\d{4}$/.test(r) ? r : '----';
+    },
+
+    /** Register listener dipanggil setiap data berubah */
+    onUpdate(cb) {
+      if (typeof cb === 'function' && !_listeners.includes(cb))
+        _listeners.push(cb);
+    },
+
+    /** Hapus listener */
+    offUpdate(cb) {
+      _listeners = _listeners.filter(x => x !== cb);
+    },
+
+    /** true jika cache ada dan < 90 menit */
+    isFresh() { return !!_data && (Date.now() - _ts < CACHE_TTL); },
+
+    /** Timestamp update terakhir */
+    metaUpdated() { return _data && _data._meta ? _data._meta.updated : ''; },
+
+    /** Fetch baru dari result.json / paito-harian (untuk halaman lain) */
+    async refresh() { return fetchFromPaitoHarian(); },
+
+    /** Internal: dipakai index.html untuk push data segar */
+    _write,
+
+    /** Definisi 65 pasaran */
+    MARKETS,
+
+    /** Keyword map untuk parse paito-harian */
+    KEYWORD_MAP,
+
+    /** CORS proxy fetch (kalau halaman lain perlu) */
+    _proxyFetch,
+
+    /** Parse paito-harian HTML */
+    _parsePaitoHarian,
+
+    /** Helper isFake */
+    isFake,
+
+    /** Helper matchMarket */
+    matchMarket,
+
+    // ── BIJI PRIMBON ─────────────────────────────────────────────
+
+    /** Tabel Biji per pasaran Jawa */
+    BIJI_TABLE: {
+      LEGI: {
+        1:['82','28','37','73','55','46','64','10','01'],
+        2:['74','47','56','65','29','92','20','02','11'],
+        3:['75','57','48','84','39','93','12','21','66'],
+        4:['76','67','58','85','94','49','22','40','04'],
+        5:['86','68','59','95','77','14','41','50','05'],
+        6:['15','51','60','06','78','87','24','42','96','69'],
+        7:['16','61','70','07','34','43','25','52','79','97'],
+        8:['26','62','53','35','89','98','71','17','44','80','08'],
+        9:['18','81','54','45','36','63','72','27','90','09'],
+      },
+      PAHING: {
+        1:['01','10','37','73','46','64','82','28'],
+        2:['74','47','65','56','29','92','20','02','11'],
+        3:['75','57','39','93','03','30','66','48','84'],
+        4:['67','76','58','85','94','49','22','04','40'],
+        5:['59','95','68','86','32','23','14','41','50','05'],
+        6:['78','87','33','96','69','06','60','24','42'],
+        7:['88','70','07','61','16','79','97','52','25'],
+        8:['98','89','71','17','53','35','26','62','80','08'],
+        9:['99','18','81','72','27','54','45'],
+      },
+      PON: {
+        1:['91','19','46','64','10','01','55','28','82','37','73'],
+        2:['29','92','38','83','20','02','11','47','74'],
+        3:['75','57','12','21','93','39','03','30','66','48','84'],
+        4:['67','76','85','58','94','49','04','40'],
+        5:['95','59','68','86','05','50','23','32'],
+        6:['60','06','15','51','33','42','24','78','87'],
+        7:['43','34','79','97','70','07','88','25','52','61','16'],
+        8:['08','80','71','17','35','53','26','62'],
+        9:['45','54','90','09','36','63','27','72'],
+      },
+      WAGE: {
+        1:['19','91','46','64','10','01','55','73','37'],
+        2:['02','20','56','65','83','38','11','47','74'],
+        3:['57','75','21','12','93','39','30','03','84','48'],
+        4:['67','76','94','49','04','40','13','31'],
+        5:['14','41','59','95','23','32','05','50'],
+        6:['87','78','60','06','69','96','33','42','24','15','51'],
+        7:['43','34','79','97','70','07','88','25','52','61','16'],
+        8:['80','08','53','35','71','17','89','98'],
+        9:['81','18','09','90','54','45','63','36','27','72'],
+      },
+      KLIWON: {
+        1:['01','10','46','64','55','82','28','73','37'],
+        2:['74','47','56','65','02','20','38','83','11'],
+        3:['12','21','93','39','30','03','84','48','66'],
+        4:['67','76','22','94','49','58','85','40','04'],
+        5:['86','68','59','95','41','14','32','23','50','05'],
+        6:['15','51','60','06','42','24','33','96','69'],
+        7:['43','34','70','07','16','61','97','79','25','52'],
+        8:['08','80','89','98','44','17','71'],
+        9:['36','63','54','45','90','09','18','81','27','72'],
+      },
+    },
+
+    /** Deteksi hari pasaran Jawa dari Date object */
+    getHariPasaran(date) {
+      const d = date || new Date();
+      // Referensi: 1 Januari 2000 = Sabtu Kliwon
+      const ref = new Date(2000, 0, 1);
+      const diff = Math.floor((d - ref) / 86400000);
+      const pasaran = ['KLIWON','LEGI','PAHING','PON','WAGE'];
+      return pasaran[((diff % 5) + 5) % 5];
+    },
+
+    /** Dapat nomor Biji dari 2D result + nama pasaran */
+    getBiji(result2d, pasaran) {
+      const tbl = this.BIJI_TABLE[pasaran];
+      if (!tbl) return null;
+      for (const [biji, nums] of Object.entries(tbl)) {
+        if (nums.includes(result2d)) return parseInt(biji);
+      }
+      return null;
+    },
+
+    /** Dapat semua angka dari Biji tertentu di pasaran tertentu */
+    getBijiAngka(biji, pasaran) {
+      const tbl = this.BIJI_TABLE[pasaran];
+      if (!tbl || !tbl[biji]) return [];
+      return tbl[biji];
+    },
+
+    /** Info lengkap Biji untuk 1 pasaran berdasarkan result & tanggal */
+    getBijiInfo(resultStr, date) {
+      if (!resultStr || resultStr === '----' || resultStr.length < 4) return null;
+      const pasaran = this.getHariPasaran(date || new Date());
+      const r2d = resultStr.slice(2, 4);
+      const biji = this.getBiji(r2d, pasaran);
+      if (!biji) return null;
+      const angka = this.getBijiAngka(biji, pasaran);
+      return { pasaran, biji, r2d, angka };
+    },
+
+    /** Buat teks ringkasan Biji untuk prompt AI */
+    getBijiPrompt(resultStr, date) {
+      const info = this.getBijiInfo(resultStr, date);
+      if (!info) return '';
+      return `Hari ini pasaran Jawa: ${info.pasaran}. Result 2D: ${info.r2d} = Biji ${info.biji}. Angka sekelompok Biji ${info.biji} (${info.pasaran}): ${info.angka.join(', ')}. Gunakan angka Biji ini sebagai DASAR prediksi.`;
+    },
+  };
+
+})(window);
+
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   PASARAN DATA (inline — tidak perlu wb_data.js)
+══════════════════════════════════════════════════════════ */
+// PASARAN_LIST diambil dari WBData.MARKETS (65 pasaran)
+// Fallback jika WBData belum dimuat
+const PASARAN_LIST_FALLBACK = [
+  {code:'hk',label:'HONGKONG POOLS',short:'HK'},
+  {code:'sgp',label:'SGP | SINGAPORE',short:'SGP'},
+  {code:'sdy',label:'SYDNEY POOLS',short:'SDY'},
+];
+function getPasaranList(){
+  if(typeof WBData !== 'undefined' && WBData.MARKETS && WBData.MARKETS.length > 0){
+    return WBData.MARKETS.map(m=>({code:m.id, label:m.name.toUpperCase(), short:m.short}));
+  }
+  return PASARAN_LIST_FALLBACK;
+}
+// Untuk kompatibilitas kode lama
+const PASARAN_LIST = getPasaranList();
+
+const TARGET_LABELS = {
+  cb:'CB', ai:'J', aid:'J', a:'AS', c:'COP', k:'KEP', e:'EKR', j:'JML'
+};
+const STORAGE_KODE = 'wb_bank_kode_v1';
+const STORAGE_AI   = 'wb_bank_ai_v2';
+
+let bankKodeData = [];
+let bankAiData   = [];
+let scanResults  = [];
+let scanning     = false;
+let scanTimer    = null;
+let currentModalId = null;
+let currentAiModalId = null;
+
+/* ── INIT ── */
+let _wbDataReady = false;
+
+async function init() {
+  loadBankKode();
+  loadBankAI();
+  updateKeyBanner();
+  initScannerRumus();
+
+  if(typeof WBData === 'undefined') {
+    document.getElementById('topbarStatus').textContent = '⚠ wb_data.js tidak ditemukan';
+    document.getElementById('topbarStatus').style.color = '#f87171';
+    buildAiPasaranDropdown(); // pakai fallback
+    return;
+  }
+
+  // Build dropdown dulu pakai MARKETS (tidak perlu tunggu data)
+  buildAiPasaranDropdown();
+
+  // Fetch / load data
+  document.getElementById('topbarStatus').textContent = '⏳ Memuat data...';
+  document.getElementById('topbarStatus').style.color = '#f59e0b';
+
+  if(WBData.isFresh()){
+    _wbDataReady = true;
+    buildAiPasaranDropdown(); // rebuild dengan info history
+    onAiPasaranChange();
+    document.getElementById('topbarStatus').textContent = '✅ WB Data Siap';
+    document.getElementById('topbarStatus').style.color = '#10b981';
+  } else {
+    // Gunakan WBData.refresh() yang sudah ada cascade URL + paito-harian
+    try {
+      await WBData.refresh();
+      _wbDataReady = true;
+      buildAiPasaranDropdown();
+      onAiPasaranChange();
+      document.getElementById('topbarStatus').textContent = '✅ WB Data Live';
+      document.getElementById('topbarStatus').style.color = '#10b981';
+    } catch(e) {
+      document.getElementById('topbarStatus').textContent = '⚠ Data cache lama';
+      document.getElementById('topbarStatus').style.color = '#f59e0b';
+    }
+  }
+
+  WBData.onUpdate(()=>{
+    _wbDataReady = true;
+    buildAiPasaranDropdown();
+    onAiPasaranChange();
+    document.getElementById('topbarStatus').textContent = '🔄 Data Diperbarui · ' + (WBData.metaUpdated()||'');
+    document.getElementById('topbarStatus').style.color = '#f59e0b';
+    setTimeout(()=>{
+      document.getElementById('topbarStatus').textContent = '✅ WB Data Live';
+      document.getElementById('topbarStatus').style.color = '#10b981';
+    }, 3000);
+  });
+}
+
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+function switchTab(tab) {
+  document.querySelectorAll('.page-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  const tabs = ['scanner-ai','bank-rumus-ai','scanner-rumus','bank-rumus'];
+  const idx = tabs.indexOf(tab);
+  if(idx>=0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+
+  if(tab==='bank-rumus-ai') renderBankAI();
+  if(tab==='bank-rumus') renderBankKode();
+}
+
+/* ══════════════════════════════════════════════
+   API KEY
+══════════════════════════════════════════════ */
+function getApiKey(){ return localStorage.getItem('wb_groq_key')||''; }
+function saveApiKey(){
+  const k = document.getElementById('apiKeyInput').value.trim();
+  if(!k){ showToast('Masukkan API key terlebih dahulu!','red'); return; }
+  localStorage.setItem('wb_groq_key', k);
+  updateKeyBanner();
+  showToast('✅ API Key tersimpan!','green');
+}
+function updateKeyBanner(){
+  const k = getApiKey();
+  const banner = document.getElementById('keyBanner');
+  const status = document.getElementById('keyStatus');
+  if(k){
+    banner.classList.add('saved');
+    status.textContent = '✅ Key tersimpan · Scanner AI siap digunakan';
+    document.getElementById('apiKeyInput').value = '';
+    document.getElementById('apiKeyInput').placeholder = 'gsk_... (tersimpan)';
+  } else {
+    banner.classList.remove('saved');
+    status.textContent = 'Masukkan Groq API Key (gsk_...) untuk mengaktifkan Scanner AI';
+  }
+}
+
+/* ══════════════════════════════════════════════
+   PASARAN DROPDOWN (Scanner AI)
+══════════════════════════════════════════════ */
+function buildAiPasaranDropdown(){
+  const sel = document.getElementById('ai-pasaran');
+  const current = sel.value; // simpan pilihan saat ini
+  if(typeof WBData === 'undefined' || !WBData.MARKETS){
+    sel.innerHTML = '<option value="">— Pilih Pasaran —</option>' +
+      PASARAN_LIST_FALLBACK.map(p=>`<option value="${p.code}">${p.label}</option>`).join('');
+    return;
+  }
+  sel.innerHTML = '<option value="">— Pilih Pasaran —</option>' +
+    WBData.MARKETS.map(m => {
+      const entry = WBData.get(m.id);
+      const hLen  = (entry && entry.history) ? entry.history.length : 0;
+      const r     = WBData.getResult(m.id);
+      const info  = r && r !== '----' ? ` · ${r}` : '';
+      const hist  = hLen ? ` (${hLen}d)` : '';
+      return `<option value="${m.id}">${m.flag} ${m.name}${info}${hist}</option>`;
+    }).join('');
+  // Kembalikan pilihan sebelumnya atau default HK
+  if(current) sel.value = current;
+  else sel.value = 'hk';
+}
+
+function onAiPasaranChange(){
+  const id = document.getElementById('ai-pasaran').value;
+  const hint = document.getElementById('aiHint');
+  if(!id || typeof WBData === 'undefined'){ hint.textContent = ''; return; }
+  const entry  = WBData.get(id);
+  const r      = WBData.getResult(id);
+  const hLen   = (entry && entry.history) ? entry.history.length : 0;
+  if(r && r !== '----'){
+    const tgl = entry && entry.tgl ? ' · ' + entry.tgl : '';
+    hint.textContent = `📡 Result: ${r}${tgl} · ${hLen} data history tersedia`;
+    hint.style.color = 'var(--green)';
+  } else if(hLen > 0){
+    hint.textContent = `⏳ Belum keluar · ${hLen} data history tersedia`;
+    hint.style.color = '#fbbf24';
+  } else {
+    hint.textContent = '⏳ Belum ada data. Klik Isi Otomatis untuk refresh.';
+    hint.style.color = '#fbbf24';
+  }
+}
+
+async function aiAutoFill(){
+  const id = document.getElementById('ai-pasaran').value;
+  if(!id){ showToast('Pilih pasaran terlebih dahulu!','red'); return; }
+
+  if(typeof WBData === 'undefined'){
+    showToast('⚠ wb_data.js belum dimuat','red'); return;
+  }
+
+  // Jika data belum segar, refresh dulu
+  let entry = WBData.get(id);
+  if(!entry || !WBData.isFresh()){
+    showToast('⏳ Mengambil data terbaru...','blue');
+    try { await WBData.refresh(); } catch(e){}
+    entry = WBData.get(id);
+  }
+
+  if(!entry){
+    showToast('⚠ Data pasaran tidak tersedia di result.json','red'); return;
+  }
+
+  // Struktur result.json:
+  // - entry.result  = result HARI INI (sudah keluar) atau '----' (belum keluar)
+  // - entry.history = [kemarin, 2 hari lalu, 3 hari lalu, ...]  (mulai dari kemarin)
+  // Jadi: prepend entry.result ke history, kecuali '----'
+
+  let results = [];
+
+  // 1. Ambil history (kemarin ke belakang)
+  if(entry.history && entry.history.length > 0){
+    results = entry.history
+      .map(h => String(h.result || '').trim())
+      .filter(r => /^\d{4}$/.test(r));
+  }
+
+  // 2. Prepend result hari ini jika sudah keluar
+  const todayR = String(entry.result || '').trim();
+  if(/^\d{4}$/.test(todayR)){
+    results.unshift(todayR);
+  }
+
+  if(results.length === 0){
+    showToast('⚠ Belum ada data untuk pasaran ini','red'); return;
+  }
+
+  // 3. Ambil max 30, isi ke textarea
+  const take = results.slice(0, 30);
+  document.getElementById('ai-results').value = take.join(', ');
+  onAiPasaranChange();
+  showToast(`⚡ ${take.length} data berhasil diisi!`, 'green');
+}
+
+/* ══════════════════════════════════════════════
+   SCANNER AI — ANTHROPIC
+══════════════════════════════════════════════ */
+async function callGroqAI(prompt){
+  const apiKey = getApiKey();
+  if(!apiKey) throw new Error('Groq API Key belum diisi! Masukkan di bagian atas.');
+  const resp = await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':'Bearer '+apiKey
+    },
+    body: JSON.stringify({
+      model:'llama-3.3-70b-versatile',
+      max_tokens:1500,
+      temperature:0,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const data = await resp.json();
+  if(!resp.ok) throw new Error(data.error?.message||'API Error '+resp.status);
+  const text = data.choices[0].message.content.trim();
+  return text.replace(/```json|```/g,'').trim();
+}
+
+function buildScannerPrompt(pasaran, results, target, depth, jumlah){
+  const depthDesc = depth==='cepat'
+    ? 'pola dasar (frekuensi digit, posisi kepala-ekor)'
+    : depth==='sedang'
+    ? 'pola + korelasi antar digit + trend naik/turun + hot cold'
+    : 'full matrix analysis: frekuensi, posisi, mistik, shio, rumus A/C/K/E/J, korelasi silang';
+  const targetDesc = {'2d':'2D Belakang','2d-depan':'2D Depan','3d':'3D','4d':'4D','semua':'Semua Format (2D/3D/4D)'}[target]||'4D';
+  const rumusFields = Array.from({length:parseInt(jumlah)},(_,i)=>
+    `"rumus_${i+1}":{"formula":"desc singkat","hasil":"angka","akurasi":"xx%"}`).join(',');
+
+  return `Kamu adalah Scanner Rumus Pro ahli togel ${pasaran}.
+Data result SUDAH KELUAR (JANGAN jadikan prediksi): ${results}
+Target: ${targetDesc} | Kedalaman: ${depthDesc}
+
+PENTING:
+- prediksi_4d, prediksi_3d, prediksi_2d = angka BERIKUTNYA yang BELUM keluar
+- prediksi_4d harus TEPAT 4 digit baru
+- Analisa ${depthDesc}
+
+Jawab HANYA JSON valid:
+{"angka_main":"1d","kepala":"1d","ekor":"1d","prediksi_2d":"2d","prediksi_3d":"3d","prediksi_4d":"4d","bbfs_4d":["6 angka"],"bbfs_3d":["4 angka"],"bbfs_2d":["3 angka"],"bola_panas":["5 digit"],"angka_mati":["3 digit"],${rumusFields},"analisa":"2-3 kalimat mendalam","kekuatan":"Kuat/Sedang/Lemah","shio":"nama shio"}`;
+}
+
+async function jalankanScannerAI(){
+  const pasaranSel = document.getElementById('ai-pasaran');
+  const pasaran    = pasaranSel.options[pasaranSel.selectedIndex]?.text || 'Unknown';
+  const results    = document.getElementById('ai-results').value.trim();
+  const target     = document.getElementById('ai-target').value;
+  const depth      = document.getElementById('ai-depth').value;
+  const jumlah     = document.getElementById('ai-jumlah').value;
+
+  if(!getApiKey()){ showToast('⚠ Masukkan Groq API Key!','red'); return; }
+  if(!results){ showToast('Masukkan minimal 2 result!','red'); return; }
+  const nums = results.split(/[,\s]+/).filter(v=>v.length===4&&!isNaN(v));
+  if(nums.length<2){ showToast('Minimal 2 result valid (4 digit)!','red'); return; }
+
+  const el  = document.getElementById('aiScanResult');
+  const btn = document.getElementById('btnScanAI');
+
+  el.innerHTML = `<div class="card"><div class="loading-wrap">
+    <div class="spinner"></div>
+    <div style="font-weight:800;color:#a78bfa;font-size:14px;">Scanner AI sedang berjalan...</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:5px;">Groq AI menganalisa ${nums.length} data result</div>
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+  </div></div>`;
+  btn.disabled=true;
+
+  // Cache - kalau input sama pakai hasil lama
+  const cacheKey='sc_'+encodeURIComponent(pasaran+'|'+nums.join(',')+'|'+target+'|'+depth).replace(/[^a-zA-Z0-9]/g,'').slice(0,60);
+  const cached=sessionStorage.getItem(cacheKey);
+  if(cached){
+    try{ renderAiResult(JSON.parse(cached),pasaran,nums.join(', '),pasaranSel.value);btn.disabled=false;return; }catch(e){}
+  }
+
+  try{
+    const raw = await callGroqAI(buildScannerPrompt(pasaran, nums.join(', '), target, depth, jumlah));
+    let p;
+    try{ p=JSON.parse(raw); }
+    catch(je){
+      const m=raw.match(/\{[\s\S]*\}/);
+      if(m) p=JSON.parse(m[0]);
+      else throw new Error('Respons AI tidak valid. Coba lagi.');
+    }
+    if(p.prediksi_4d?.includes('-')) p.prediksi_4d=p.prediksi_4d.split('-').pop().trim();
+    if(p.prediksi_3d?.includes('-')) p.prediksi_3d=p.prediksi_3d.split('-').pop().trim();
+    if(p.prediksi_2d?.includes('-')) p.prediksi_2d=p.prediksi_2d.split('-').pop().trim();
+    renderAiResult(p, pasaran, nums.join(', '), pasaranSel.value);
+    sessionStorage.setItem(cacheKey, JSON.stringify(p));
+  } catch(e){
+    let errMsg = e.message||'Terjadi kesalahan';
+    let errHint = '';
+    if(errMsg.includes('Failed to fetch')||errMsg.includes('NetworkError')){
+      errMsg='Gagal terhubung ke Groq API';
+      errHint='Cek koneksi internet. Groq gratis di console.groq.com';
+    } else if(errMsg.includes('401')||errMsg.includes('invalid_api_key')||errMsg.includes('Unauthorized')){
+      errMsg='Groq API Key tidak valid';
+      errHint='Dapatkan key gratis di console.groq.com → API Keys';
+    } else if(errMsg.includes('429')){
+      errMsg='Rate limit — terlalu banyak request';
+      errHint='Tunggu beberapa saat lalu coba lagi.';
+    }
+    el.innerHTML=`<div class="card" style="text-align:center;padding:24px;">
+      <div style="font-size:28px;margin-bottom:8px;">⚠️</div>
+      <div style="color:#f87171;font-weight:800;margin-bottom:5px;">Scanner Gagal</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">${errMsg}</div>
+      ${errHint?`<div style="font-size:10px;color:#fbbf24;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:8px 12px;margin-top:4px;line-height:1.5;">${errHint}</div>`:''}
+    </div>`;
+  } finally{ btn.disabled=false; }
+}
+
+function renderAiResult(p, pasaran, results, pasaranId){
+  const kelas = p.kekuatan==='Kuat'?'strength-kuat':p.kekuatan==='Sedang'?'strength-sedang':'strength-lemah';
+  const rumusArr = [];
+  for(let i=1;i<=8;i++){ if(p['rumus_'+i]) rumusArr.push(p['rumus_'+i]); }
+  window._lastAiData = {p, pasaran, pasaranId, results};
+
+  document.getElementById('aiScanResult').innerHTML = `
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div>
+        <div style="font-family:'Bebas Neue';font-size:15px;color:var(--gold-light);">${pasaran}</div>
+        <div style="font-size:10px;color:var(--muted);">Dari: ${results}</div>
+      </div>
+      <span class="strength-badge ${kelas}">💪 ${p.kekuatan||'—'}</span>
+    </div>
+
+    <div class="result-hero">
+      <div style="font-size:9px;color:var(--muted);font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;">PREDIKSI 4D</div>
+      <div class="result-4d">${p.prediksi_4d||'——'}</div>
+      <div class="result-sub">
+        <div class="result-pill"><div class="lbl">3D</div><div class="val">${p.prediksi_3d||'—'}</div></div>
+        <div class="result-pill"><div class="lbl">2D</div><div class="val">${p.prediksi_2d||'—'}</div></div>
+        <div class="result-pill"><div class="lbl">KEPALA</div><div class="val">${p.kepala||'—'}</div></div>
+        <div class="result-pill"><div class="lbl">EKOR</div><div class="val">${p.ekor||'—'}</div></div>
+        <div class="result-pill"><div class="lbl">MAIN</div><div class="val">${p.angka_main||'—'}</div></div>
+        ${p.shio?`<div class="result-pill"><div class="lbl">SHIO</div><div class="val" style="font-size:12px;">${p.shio}</div></div>`:''}
+      </div>
+    </div>
+
+    <div class="bbfs-grid">
+      <div class="bbfs-box"><div class="bbfs-lbl">BBFS 4D</div><div class="bbfs-nums">${(p.bbfs_4d||[]).join(' ')}</div></div>
+      <div class="bbfs-box"><div class="bbfs-lbl">BBFS 3D</div><div class="bbfs-nums">${(p.bbfs_3d||[]).join(' ')}</div></div>
+      <div class="bbfs-box"><div class="bbfs-lbl">BBFS 2D</div><div class="bbfs-nums">${(p.bbfs_2d||[]).join(' ')}</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px;">
+      <div class="card" style="margin:0;padding:11px;">
+        <div class="card-title" style="margin-bottom:8px;">🔥 Bola Panas</div>
+        <div class="balls-row">${(p.bola_panas||[]).map(n=>`<div class="ball ball-hot">${n}</div>`).join('')}</div>
+      </div>
+      <div class="card" style="margin:0;padding:11px;">
+        <div class="card-title" style="margin-bottom:8px;">💀 Angka Mati</div>
+        <div class="balls-row">${(p.angka_mati||[]).map(n=>`<div class="ball ball-mati">${n}</div>`).join('')}</div>
+      </div>
+    </div>
+
+    <div class="card-title" style="margin-bottom:9px;">📐 Rumus Prediksi</div>
+    ${rumusArr.map((r,i)=>`
+    <div class="rumus-item">
+      <div class="rumus-num">${i+1}</div>
+      <div class="rumus-formula">${r.formula||'—'}</div>
+      <div class="rumus-right">
+        <div class="rumus-hasil">${r.hasil||'--'}</div>
+        <span class="rumus-acc">${r.akurasi||'—'}</span>
+      </div>
+    </div>`).join('')}
+
+    ${p.analisa?`<div class="ai-box" style="margin-top:10px;">
+      <div class="ai-box-title">🧠 Analisa Claude AI</div>
+      <div class="ai-box-text">${p.analisa}</div>
+    </div>`:''}
+
+    <div class="divider"></div>
+    <div class="btn-row">
+      <button class="btn btn-green" style="flex:1;" onclick="simpanKeAiBank()">🔖 Simpan ke Bank AI</button>
+      <button class="btn btn-outline" style="flex:1;" onclick="copyAiResult()">📋 Copy</button>
+    </div>
+  </div>`;
+}
+
+function simpanKeAiBank(){
+  const d = window._lastAiData;
+  if(!d){ showToast('Tidak ada hasil untuk disimpan!','red'); return; }
+  loadBankAI();
+  const item = {
+    id: Date.now(),
+    pasaran: d.pasaran,
+    pasaranId: d.pasaranId,
+    results: d.results,
+    p: d.p,
+    savedAt: Date.now()
+  };
+  bankAiData.unshift(item);
+  saveBankAI();
+  showToast('✅ Tersimpan ke Bank AI!','green');
+}
+
+function copyAiResult(){
+  const d = window._lastAiData;
+  if(!d){ showToast('Tidak ada hasil!','red'); return; }
+  const p = d.p;
+  const rumusArr = [];
+  for(let i=1;i<=8;i++){ if(p['rumus_'+i]) rumusArr.push(p['rumus_'+i]); }
+  const txt = [
+    '🧠 WONGBAGUS PRO — Scanner AI',
+    `Pasaran : ${d.pasaran}`,
+    `Input   : ${d.results}`,
+    '━━━━━━━━━━━━━━━━━━━━━━━',
+    `4D: ${p.prediksi_4d||'—'}  3D: ${p.prediksi_3d||'—'}  2D: ${p.prediksi_2d||'—'}`,
+    `Kepala: ${p.kepala||'—'}  Ekor: ${p.ekor||'—'}  Main: ${p.angka_main||'—'}`,
+    '━━━━━━━━━━━━━━━━━━━━━━━',
+    `🎲 BBFS 4D : ${(p.bbfs_4d||[]).join(' ')}`,
+    `🎲 BBFS 3D : ${(p.bbfs_3d||[]).join(' ')}`,
+    `🎲 BBFS 2D : ${(p.bbfs_2d||[]).join(' ')}`,
+    '━━━━━━━━━━━━━━━━━━━━━━━',
+    ...rumusArr.map((r,i)=>`📐 R${i+1}: ${r.formula} → ${r.hasil} (${r.akurasi})`),
+    '━━━━━━━━━━━━━━━━━━━━━━━',
+    `🔥 Bola Panas : ${(p.bola_panas||[]).join(' ')}`,
+    `💀 Angka Mati : ${(p.angka_mati||[]).join(' ')}`,
+    `🐾 Shio       : ${p.shio||'—'}`,
+    `💪 Kekuatan   : ${p.kekuatan||'—'}`,
+    '━━━━━━━━━━━━━━━━━━━━━━━',
+    `🧠 ${p.analisa||''}`,
+    '🌐 WONGBAGUS PRO'
+  ].join('\n');
+  navigator.clipboard.writeText(txt)
+    .then(()=>showToast('✅ Tersalin ke clipboard!','green'))
+    .catch(()=>{
+      const ta=document.createElement('textarea');ta.value=txt;
+      ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);
+      ta.select();document.execCommand('copy');document.body.removeChild(ta);
+      showToast('✅ Tersalin!','green');
+    });
+}
+
+/* ══════════════════════════════════════════════
+   BANK AI — CRUD
+══════════════════════════════════════════════ */
+function loadBankAI(){
+  try{ bankAiData = JSON.parse(localStorage.getItem(STORAGE_AI)||'[]'); }
+  catch(e){ bankAiData=[]; }
+}
+function saveBankAI(){ localStorage.setItem(STORAGE_AI, JSON.stringify(bankAiData)); }
+function clearBankAI(){
+  if(!confirm('Hapus semua data Bank AI?')) return;
+  bankAiData=[];saveBankAI();renderBankAI();showToast('🗑 Bank AI dikosongkan','red');
+}
+
+function renderBankAI(){
+  loadBankAI();
+  document.getElementById('bankAiCount').textContent = bankAiData.length;
+  const list = document.getElementById('bankAiList');
+  if(!bankAiData.length){
+    list.innerHTML = `<div class="empty-state"><div class="empty-ico">🧠</div>
+      <div class="empty-text">Belum ada hasil disimpan.<br>Jalankan Scanner AI dan klik <strong>Simpan ke Bank AI</strong>.</div></div>`;
+    document.getElementById('bankAiChips').innerHTML='';
+    return;
+  }
+  // Chips pasaran
+  const pasarans = [...new Set(bankAiData.map(d=>d.pasaran))];
+  document.getElementById('bankAiChips').innerHTML =
+    `<button class="chip active" onclick="filterBankAI('',this)">Semua</button>` +
+    pasarans.map(p=>`<button class="chip" onclick="filterBankAI('${p}',this)">${p}</button>`).join('');
+
+  renderBankAIFiltered('');
+}
+
+function filterBankAI(psr, el){
+  document.querySelectorAll('#bankAiChips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderBankAIFiltered(psr);
+}
+
+function renderBankAIFiltered(filter){
+  const data = filter ? bankAiData.filter(d=>d.pasaran===filter) : bankAiData;
+  const list = document.getElementById('bankAiList');
+  list.innerHTML = data.map(item=>{
+    const p = item.p;
+    const rumusArr=[];for(let i=1;i<=8;i++){if(p['rumus_'+i])rumusArr.push(p['rumus_'+i]);}
+    const tgl = new Date(item.savedAt).toLocaleDateString('id-ID');
+    return `
+    <div class="bank-item">
+      <div class="bank-item-top">
+        <span class="bank-market">${item.pasaran}</span>
+        <span class="bank-type-tag">AI SCAN</span>
+        <span class="bank-hari">${tgl}</span>
+      </div>
+      <div class="bank-formula" style="font-size:9px;margin-bottom:4px;">Input: ${item.results}</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:7px;">
+        <span class="bank-angka">${p.prediksi_4d||'—'}</span>
+        <span class="bank-pjg">3D:${p.prediksi_3d||'—'} 2D:${p.prediksi_2d||'—'}</span>
+      </div>
+      <div class="bank-row-bottom">
+        <button class="btn-sm btn-sm-cyan" onclick="openAiDetail('${item.id}')">🔍 Detail</button>
+        <button class="btn-sm btn-sm-gold" onclick="copyAiItem('${item.id}')">📋 Copy</button>
+        <button class="btn-sm btn-sm-red" onclick="deleteAiItem('${item.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteAiItem(id){
+  bankAiData = bankAiData.filter(d=>String(d.id)!==String(id));
+  saveBankAI();renderBankAI();showToast('🗑 Dihapus','red');
+}
+
+function openAiDetail(id){
+  const item = bankAiData.find(d=>String(d.id)===String(id));
+  if(!item) return;
+  currentAiModalId = id;
+  const p = item.p;
+  const rumusArr=[];for(let i=1;i<=8;i++){if(p['rumus_'+i])rumusArr.push(p['rumus_'+i]);}
+  document.getElementById('aiDetailTitle').textContent = item.pasaran + ' — ' + new Date(item.savedAt).toLocaleDateString('id-ID');
+  document.getElementById('aiDetailBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue';font-size:40px;letter-spacing:6px;color:var(--text);">${p.prediksi_4d||'——'}</div>
+      <div style="font-size:11px;color:var(--muted);">3D: ${p.prediksi_3d||'—'} · 2D: ${p.prediksi_2d||'—'} · Kepala: ${p.kepala||'—'} · Ekor: ${p.ekor||'—'}</div>
+    </div>
+    <div style="margin-bottom:10px;"><strong style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">BBFS</strong><br>
+      4D: ${(p.bbfs_4d||[]).join(' ')} · 3D: ${(p.bbfs_3d||[]).join(' ')} · 2D: ${(p.bbfs_2d||[]).join(' ')}</div>
+    <div style="margin-bottom:10px;"><strong style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Bola Panas & Mati</strong><br>
+      🔥 ${(p.bola_panas||[]).join(' ')} &nbsp;💀 ${(p.angka_mati||[]).join(' ')}</div>
+    ${rumusArr.map((r,i)=>`<div style="padding:6px 0;border-bottom:1px solid var(--border2);">
+      <span style="font-size:9px;color:#a78bfa;font-weight:800;">R${i+1}</span>
+      <span style="font-size:11px;color:var(--muted);margin:0 8px;">${r.formula}</span>
+      <strong style="font-family:'Bebas Neue';font-size:16px;letter-spacing:2px;color:var(--gold);">${r.hasil}</strong>
+      <span style="font-size:9px;color:var(--green);margin-left:6px;">${r.akurasi}</span>
+    </div>`).join('')}
+    ${p.analisa?`<div style="margin-top:10px;padding:10px;background:rgba(124,58,237,.07);border-radius:8px;font-size:12px;line-height:1.65;">${p.analisa}</div>`:''}
+  `;
+  document.getElementById('aiDetailModal').classList.add('open');
+}
+function closeAiDetailModal(e){ if(e.target===document.getElementById('aiDetailModal')) closeAiDetailModalDirect(); }
+function closeAiDetailModalDirect(){ document.getElementById('aiDetailModal').classList.remove('open'); }
+function deleteAiItemFromModal(){
+  if(currentAiModalId) deleteAiItem(currentAiModalId);
+  closeAiDetailModalDirect();
+}
+function copyAiDetailFromModal(){
+  const item = bankAiData.find(d=>String(d.id)===String(currentAiModalId));
+  if(!item) return;
+  const d = {lastAiData:item};
+  window._lastAiData = {p:item.p, pasaran:item.pasaran, results:item.results};
+  copyAiResult();
+}
+function copyAiItem(id){
+  const item = bankAiData.find(d=>String(d.id)===String(id));
+  if(!item) return;
+  window._lastAiData = {p:item.p, pasaran:item.pasaran, results:item.results};
+  copyAiResult();
+}
+
+/* ══════════════════════════════════════════════
+/* ══════════════════════════════════════════════
+   SCANNER RUMUS — ENGINE LOKAL (Angkanet-style)
+   Tabel konversi dari docs.scanangka.blog
+══════════════════════════════════════════════ */
+
+/* ─── TABEL KONVERSI MODIFIER (dari scanangka docs) ─── */
+const MOD_TABLE = {
+  ix: {0:5,1:6,2:7,3:8,4:9,5:0,6:1,7:2,8:3,9:4},
+  ty: {0:7,1:4,2:9,3:6,4:1,5:8,6:3,7:0,8:5,9:2},
+  ml: {0:1,1:2,2:5,3:8,4:7,5:6,6:9,7:4,8:3,9:0},
+  mb: {0:8,1:7,2:6,3:9,4:5,5:4,6:3,7:2,8:1,9:0},
+  m0: {0:6,1:5,2:8,3:7,4:9,5:0,6:2,7:3,8:1,9:4},
+  m1: {0:1,1:2,2:9,3:8,4:7,5:6,6:5,7:4,8:3,9:0},
+  m2: {0:2,1:3,2:0,3:9,4:7,5:6,6:5,7:4,8:1,9:8},
+  m3: {0:3,1:2,2:1,3:0,4:9,5:8,6:7,7:6,8:5,9:4},
+  m4: {0:6,1:5,2:3,3:7,4:8,5:9,6:0,7:1,8:2,9:4},
+  m5: {0:5,1:4,2:3,3:2,4:1,5:0,6:9,7:8,8:7,9:6},
+  m6: {0:6,1:8,2:4,3:5,4:9,5:3,6:0,7:9,8:2,9:1},
+  m7: {0:7,1:6,2:5,3:4,4:3,5:2,6:1,7:0,8:9,9:8},
+  m8: {0:8,1:7,2:6,3:5,4:4,5:3,6:2,7:1,8:0,9:9},
+  m9: {0:9,1:8,2:7,3:6,4:5,5:4,6:3,7:2,8:1,9:0},
+  m10:{0:4,1:2,2:3,3:8,4:6,5:9,6:5,7:0,8:1,9:7},
+  m11:{0:1,1:5,2:4,3:3,4:8,5:6,6:7,7:9,8:2,9:0},
+  m12:{0:2,1:7,2:3,3:8,4:6,5:9,6:1,7:5,8:0,9:4},
+  m13:{0:3,1:9,2:7,3:1,4:6,5:8,6:4,7:2,8:5,9:0},
+  m14:{0:6,1:5,2:4,3:7,4:9,5:8,6:3,7:2,8:1,9:0},
+  m15:{0:5,1:6,2:4,3:9,4:8,5:7,6:3,7:2,8:1,9:0},
+  m16:{0:3,1:8,2:7,3:1,4:9,5:6,6:4,7:2,8:5,9:0},
+  m17:{0:9,1:4,2:8,3:6,4:7,5:5,6:3,7:2,8:1,9:0},
+  m18:{0:8,1:9,2:7,3:4,4:6,5:5,6:3,7:2,8:1,9:0},
+  m19:{0:7,1:8,2:3,3:6,4:9,5:6,6:5,7:4,8:2,9:0},
+};
+
+/* ─── SEMUA KODE ELEMEN RUMUS ─── */
+const RB_ELEMS = [
+  '-',
+  // A-series (As)
+  'A1','A2','A3','A4','A5','A6','A7','A8','A9',
+  // C-series (Cop)
+  'C1','C2','C3','C4','C5','C6','C7','C8','C9',
+  // K-series (Kepala)
+  'K1','K2','K3','K4','K5','K6','K7','K8','K9',
+  // E-series (Ekor)
+  'E1','E2','E3','E4','E5','E6','E7','E8','E9',
+  // J-series (Jumlah 2D)
+  'J1','J2','J3','J4','J5','J6','J7','J8','J9',
+  // Js-series (Jumlah step)
+  'Js1','Js2','Js3','Js4','Js5','Js6','Js7','Js8','Js9',
+  // Jt-series
+  'Jt1','Jt2','Jt3','Jt4','Jt5','Jt6','Jt7','Jt8','Jt9',
+  // Jd-series
+  'Jd1','Jd2','Jd3','Jd4','Jd5','Jd6','Jd7','Jd8','Jd9',
+  // J3D-series
+  'J3D1','J3D2','J3D3','J3D4','J3D5','J3D6','J3D7','J3D8','J3D9',
+  // J4D-series
+  'J4D1','J4D2','J4D3','J4D4','J4D5','J4D6','J4D7','J4D8','J4D9',
+];
+
+/* ─── ISI DROPDOWN ELEMEN ─── */
+function populateRbSelects() {
+  ['rb_e1','rb_e2','rb_e3','rb_e4'].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = RB_ELEMS.map(e => `<option value="${e}">${e}</option>`).join('');
+  });
+}
+
+/* ─── AMBIL DIGIT DARI HISTORY ─── */
+function getDigitFromResult(result4d, pos) {
+  // pos: 'a'=As(idx0), 'c'=Cop(idx1), 'k'=Kepala(idx2), 'e'=Ekor(idx3)
+  const s = String(result4d || '').trim();
+  if (!/^\d{4}$/.test(s)) return null;
+  const map = {a:0, c:1, k:2, e:3};
+  return parseInt(s[map[pos] ?? 3]);
+}
+
+/* ─── PARSE KODE ELEMEN (A1, K3, Js2, dst) ─── */
+function parseElemCode(code, histArr) {
+  // Returns single digit (0-9) or null
+  if (!code || code === '-') return null;
+  const m = code.match(/^([A-Z][a-z0-9]*)(\d+)$/);
+  if (!m) return null;
+  const [, prefix, nStr] = m;
+  const n = parseInt(nStr); // urutan history (1=terbaru)
+
+  const result = histArr[n - 1];
+  if (!result || !/^\d{4}$/.test(result)) return null;
+
+  const A = parseInt(result[0]);
+  const C = parseInt(result[1]);
+  const K = parseInt(result[2]);
+  const E = parseInt(result[3]);
+
+  switch(prefix.toUpperCase()) {
+    case 'A':   return A;
+    case 'C':   return C;
+    case 'K':   return K;
+    case 'E':   return E;
+    case 'J':   return (K + E) % 10;      // 2D belakang
+    case 'JS':  return (A + E) % 10;      // As + Ekor (jumlah step)
+    case 'JT':  return Math.abs(K - E) % 10; // |Kepala - Ekor|
+    case 'JD':  return (A + C) % 10;      // As + Cop (jumlah depan)
+    case 'J3D': return (C + K + E) % 10;  // 3D belakang
+    case 'J4D': return (A + C + K + E) % 10; // semua 4 digit
+    default:    return null;
+  }
+}
+
+/* ─── APPLY OPERATOR ─── */
+function applyOp(a, b, op) {
+  if (a === null || b === null) return a ?? b;
+  if (op === '+') return (a + b) % 10;
+  if (op === '-') return ((a - b) % 10 + 10) % 10;
+  if (op === '.') return (a * b) % 10;
+  return a;
+}
+
+/* ─── APPLY MODIFIER ─── */
+function applyMod(digit, mod) {
+  if (!mod || mod === '-') return digit;
+  const tbl = MOD_TABLE[mod];
+  if (!tbl) return digit;
+  return tbl[digit] ?? digit;
+}
+
+/* ─── PARSE TOKEN + MODIFIER DALAM TOKEN ─── */
+// Contoh token: "J4D2ml" → prefix="J4D", n=2, tokenMod="ml"
+//               "A1" → prefix="A", n=1, tokenMod=null
+//               "Js3m8" → prefix="Js", n=3, tokenMod="m8"
+function parseElemCodeWithMod(token, histArr) {
+  if (!token || token === '-') return null;
+  // Pisahkan token modifier (ml, ix, mb, ty, m0-m9) dari akhir token
+  const modMatch = token.match(/(ml|ix|mb|ty|m\d{1,2})$/);
+  let rawToken = token;
+  let tokenMod = null;
+  if (modMatch) {
+    tokenMod = modMatch[1];
+    rawToken = token.slice(0, token.length - tokenMod.length);
+  }
+  const val = parseElemCode(rawToken, histArr);
+  if (val === null) return null;
+  return tokenMod ? applyMod(val, tokenMod) : val;
+}
+
+/* ─── KALKULASI FORMULA DARI STRING ─── */
+// Support: "A1-K1.m0", "J4D2ml+E1.ix", "Js2m8-A2m8.mb", dll
+function calcFormulaFromStr(formulaStr, histArr) {
+  if (!formulaStr || formulaStr === '—' || formulaStr === '-') return null;
+
+  let expr = formulaStr.trim();
+  let finalMod = '-';
+
+  // Pisahkan modifier final (setelah titik terakhir)
+  const dotIdx = expr.lastIndexOf('.');
+  if (dotIdx > 0) {
+    const candidate = expr.slice(dotIdx + 1);
+    if (/^(ml|ix|mb|ty|m\d{1,2})$/.test(candidate)) {
+      finalMod = candidate;
+      expr = expr.slice(0, dotIdx);
+    }
+  }
+
+  // Tokenize: split by + atau - (jaga operator)
+  // Regex: ambil optional operator lalu token (huruf+angka+akhiran modifier)
+  const tokenRe = /([+\-]?)([A-Za-z][A-Za-z0-9]*)/g;
+  const tokens = [];
+  let m;
+  while ((m = tokenRe.exec(expr)) !== null) {
+    tokens.push({ op: m[1] || '+', token: m[2] });
+  }
+
+  if (tokens.length === 0) return null;
+
+  let result = parseElemCodeWithMod(tokens[0].token, histArr);
+  if (result === null) return null;
+
+  for (let i = 1; i < tokens.length; i++) {
+    const v = parseElemCodeWithMod(tokens[i].token, histArr);
+    if (v === null) break;
+    result = applyOp(result, v, tokens[i].op);
+  }
+
+  if (finalMod !== '-') result = applyMod(result, finalMod);
+
+  return result;
+}
+
+/* ─── BUILD TREK DATA REAL (dari string formula) ─── */
+function buildRealTrekData(wbId, fcol, rows, formulaStr, digitHasil) {
+  rows = rows || 20;
+  const hist = getSrHistory(wbId, rows + 5);
+  if (!hist || hist.length === 0) return [];
+  const is2D = ['ke','ck','ac'].includes(fcol);
+
+  return hist.slice(0, rows).map((r, i) => {
+    const subHist = hist.slice(i + 1);
+    if (subHist.length === 0) return { period: r, pred: '—', hit: false };
+
+    const pred = formulaStr
+      ? calcFormulaFromStr(formulaStr, subHist)
+      : calcFormula(subHist);
+
+    const actual = getTargetDigit(r, fcol);
+    let hit = false;
+    let predStr = '—';
+
+    if (pred !== null) {
+      predStr = is2D ? String(pred).padStart(2, '0') : String(pred);
+      if (actual !== null) {
+        if (is2D) {
+          const aK = Math.floor(actual / 10), aE = actual % 10;
+          hit = (pred === aK || pred === aE);
+        } else {
+          hit = (String(pred) === String(actual));
+        }
+      }
+    }
+
+    return { period: r, pred: predStr, hit };
+  });
+}
+
+/* ─── KALKULASI FORMULA ─── */
+function calcFormula(histArr) {
+  const elems = ['rb_e1','rb_e2','rb_e3','rb_e4'].map(id =>
+    document.getElementById(id)?.value || '-'
+  );
+  const ops = ['rb_o1','rb_o2','rb_o3','rb_o4'].map(id =>
+    document.getElementById(id)?.value || '-'
+  );
+  const mod = document.getElementById('rb_mod')?.value || '-';
+
+  // Ambil nilai tiap elemen
+  const vals = elems.map(e => parseElemCode(e, histArr));
+
+  // Reduce dengan operator
+  let result = vals[0];
+  for (let i = 1; i < 4; i++) {
+    if (elems[i] === '-' || vals[i] === null) break;
+    if (ops[i-1] === '-') break; // no operator = stop
+    result = applyOp(result, vals[i], ops[i-1]);
+  }
+
+  // Apply modifier
+  if (result !== null && mod !== '-') {
+    result = applyMod(result, mod);
+  }
+
+  return result;
+}
+
+/* ─── BUILD LABEL FORMULA ─── */
+function buildFormulaLabel() {
+  const elems = ['rb_e1','rb_e2','rb_e3','rb_e4'].map(id =>
+    document.getElementById(id)?.value || '-'
+  );
+  const ops = ['rb_o1','rb_o2','rb_o3','rb_o4'].map(id =>
+    document.getElementById(id)?.value || '-'
+  );
+  const mod = document.getElementById('rb_mod')?.value || '-';
+
+  let label = elems[0] === '-' ? '' : elems[0];
+  for (let i = 1; i < 4; i++) {
+    if (elems[i] === '-') break;
+    const op = ops[i-1];
+    if (op === '-') break;
+    label += op + elems[i];
+  }
+  if (mod !== '-') label += '.' + mod;
+  return label || '—';
+}
+
+
+/* ─── HELPER FUNCTIONS ─── */
+function rInt(a, b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+function genPred(fcol){
+  const is2D = ['ke','ck','ac','ai','cb','cm','cn','bbfske','bbfsck','bbfsac','jac','jck','jke','ctac','ctck','ctke'].includes(fcol);
+  if(is2D) return String(rInt(0,99)).padStart(2,'0');
+  return String(rInt(0,9));
+}
+
+function genTrekData(code, rows){
+  // Generate trek data simulasi dari kode rumus
+  const trek = [];
+  for(let i=0; i<rows; i++){
+    trek.push({
+      period: i+1,
+      pred: genPred((code.split('_')[1]||'e')),
+      hit: Math.random() > 0.6
+    });
+  }
+  return trek;
+}
+
+/* ─── GET HISTORY UNTUK PASARAN ─── */
+function getSrHistory(wbId, max) {
+  if (typeof WBData === 'undefined') return [];
+  const entry = WBData.get(wbId);
+  if (!entry) return [];
+  let results = [];
+  if (entry.history && entry.history.length > 0) {
+    results = entry.history.map(h => String(h.result||'').trim()).filter(r => /^\d{4}$/.test(r));
+  }
+  const todayR = String(entry.result||'').trim();
+  if (/^\d{4}$/.test(todayR)) results.unshift(todayR);
+  return [...new Set(results)].slice(0, max || 30);
+}
+
+/* ─── GET TARGET DIGIT (dari result 4D) ─── */
+function getTargetDigit(result4d, fcol) {
+  const s = String(result4d||'').trim();
+  if (!/^\d{4}$/.test(s)) return null;
+  const A=parseInt(s[0]), C=parseInt(s[1]), K=parseInt(s[2]), E=parseInt(s[3]);
+  switch(fcol) {
+    case 'e': return E;
+    case 'k': return K;
+    case 'c': return C;
+    case 'a': return A;
+    case 'ke': return (K*10+E);
+    case 'ck': return (C*10+K);
+    case 'ac': return (A*10+C);
+    default:   return E;
+  }
+}
+
+/* ─── PREVIEW UPDATE (dipanggil saat dropdown berubah) ─── */
+let srCurrentWbId = '';
+let srHistory = [];
+
+function srPreviewUpdate() {
+  if (!srCurrentWbId) {
+    document.getElementById('rbFormulaText').textContent = '— pilih pasaran dulu —';
+    document.getElementById('rbPredResult').textContent = '--';
+    return;
+  }
+
+  const hist = getSrHistory(srCurrentWbId, 30);
+  srHistory = hist;
+
+  const formula = buildFormulaLabel();
+  document.getElementById('rbFormulaText').textContent = formula;
+
+  // Hitung prediksi dari history[0] (terbaru sebagai referensi)
+  const pred = calcFormula(hist);
+  const fcol = document.getElementById('sr-fcol').value;
+  let predDisplay = '--';
+  if (pred !== null) {
+    predDisplay = fcol.includes('ke') || fcol.includes('ck') || fcol.includes('ac')
+      ? String(pred).padStart(2,'0')
+      : String(pred);
+  }
+  document.getElementById('rbPredResult').textContent = predDisplay;
+
+  // Update referensi jika ditampilkan
+  srRefToggle();
+}
+
+/* ─── REFERENSI TOGGLE ─── */
+function srRefToggle() {
+  const show = document.getElementById('sr-ref')?.value === 'show';
+  const box = document.getElementById('srRefBox');
+  if (!box) return;
+  box.style.display = show ? 'block' : 'none';
+  if (!show) return;
+
+  const hist = srHistory;
+  const fcol = document.getElementById('sr-fcol').value;
+  const limit = parseInt(document.getElementById('sr-limit').value) || 15;
+
+  let html = '<div style="font-family:\'Barlow Condensed\';font-size:12px;">';
+  hist.slice(0, limit).forEach((r, i) => {
+    const pred = calcFormula(hist.slice(i+1));
+    const actual = getTargetDigit(hist[i], fcol);
+    const hit = pred !== null && actual !== null && String(pred) === String(actual);
+    html += `<div style="display:flex;gap:8px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.04);">
+      <span style="color:var(--muted);width:18px;">${i+1}</span>
+      <span style="color:var(--text);">${r}</span>
+      <span style="color:var(--gold);font-family:'Bebas Neue';font-size:15px;">→ ${pred !== null ? pred : '--'}</span>
+      <span style="color:var(--muted);">actual: ${actual ?? '--'}</span>
+      ${hit ? '<span style="color:var(--green);font-weight:800;font-size:10px;">✓ HIT</span>' : ''}
+    </div>`;
+  });
+  html += '</div>';
+  document.getElementById('srRefContent').innerHTML = html;
+}
+
+/* ─── PASARAN CHANGE ─── */
+function onSrPasaranChange() {
+  const sel = document.getElementById('sr-pasaran-sel');
+  const wbId = sel.value;
+  srCurrentWbId = wbId;
+
+  if (!wbId) {
+    document.getElementById('srDataBar').style.display = 'none';
+    return;
+  }
+
+  const hist = getSrHistory(wbId, 30);
+  srHistory = hist;
+  const todayR = (typeof WBData !== 'undefined') ? WBData.getResult(wbId) : '----';
+
+  const bar = document.getElementById('srDataBar');
+  bar.style.display = 'flex';
+  document.getElementById('srRealResult').textContent = todayR || '----';
+  document.getElementById('srHistCount').textContent = hist.length + ' data';
+
+  // Cari nama pasaran
+  const mkt = (typeof WBData !== 'undefined' ? WBData.MARKETS : []).find(m => m.id === wbId);
+  document.getElementById('srDataInfo').textContent = mkt ? mkt.name + ' · ' + mkt.time : '';
+
+  srPreviewUpdate();
+}
+
+/* ─── MODE CHANGE ─── */
+function srModeChange() {
+  const mode = document.getElementById('sr-mode').value;
+  document.getElementById('srFormulaBuilder').style.display = mode === 'manual' ? 'block' : 'none';
+  document.getElementById('srAutoPanel').style.display = mode === 'auto' ? 'block' : 'none';
+}
+
+/* ─── NAV RUMUS (prev/next preset formula) ─── */
+const PRESET_FORMULAS = [
+  {e1:'A1',o1:'+',e2:'E1',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'-'},
+  {e1:'K1',o1:'+',e2:'E1',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'m3'},
+  {e1:'A1',o1:'-',e2:'C1',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'ix'},
+  {e1:'J1',o1:'+',e2:'K2',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'m1'},
+  {e1:'E1',o1:'+',e2:'E2',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'ty'},
+  {e1:'A1',o1:'+',e2:'K1',o2:'+',e3:'E1',o3:'-',e4:'-',o4:'-',mod:'m5'},
+  {e1:'Js1',o1:'+',e2:'E1',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'ml'},
+  {e1:'J1',o1:'-',e2:'J2',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'m7'},
+  {e1:'K1',o1:'+',e2:'K2',o2:'+',e3:'K3',o3:'-',e4:'-',o4:'-',mod:'-'},
+  {e1:'A1',o1:'.',e2:'E1',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'m9'},
+  {e1:'Jt1',o1:'+',e2:'K1',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'mb'},
+  {e1:'C1',o1:'+',e2:'C2',o2:'+',e3:'C3',o3:'-',e4:'-',o4:'-',mod:'-'},
+  {e1:'J3D1',o1:'+',e2:'E1',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'m3'},
+  {e1:'A2',o1:'-',e2:'E2',o2:'-',e3:'-',o3:'-',e4:'-',o4:'-',mod:'ty'},
+  {e1:'K1',o1:'+',e2:'E2',o2:'+',e3:'A3',o3:'-',e4:'-',o4:'-',mod:'m0'},
+];
+let presetIdx = 0;
+
+function navRumus(dir) {
+  presetIdx = (presetIdx + dir + PRESET_FORMULAS.length) % PRESET_FORMULAS.length;
+  const p = PRESET_FORMULAS[presetIdx];
+  const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+  setVal('rb_e1', p.e1); setVal('rb_o1', p.o1);
+  setVal('rb_e2', p.e2); setVal('rb_o2', p.o2);
+  setVal('rb_e3', p.e3); setVal('rb_o3', p.o3);
+  setVal('rb_e4', p.e4); setVal('rb_o4', p.o4);
+  setVal('rb_mod', p.mod);
+  srPreviewUpdate();
+}
+
+function bukaRumus() {
+  // Buka semua elemen ke nilai random dari preset
+  navRumus(1);
+  showToast('🔓 Rumus dibuka!', 'blue');
+}
+
+/* ─── COPY RUMUS ─── */
+function copyRumusTeks() {
+  const formula = buildFormulaLabel();
+  const pred = document.getElementById('rbPredResult').textContent;
+  const mkt = document.getElementById('sr-pasaran-sel');
+  const mktName = mkt?.options[mkt.selectedIndex]?.text || '';
+  const fcol = document.getElementById('sr-fcol')?.value || 'e';
+  const text = `[${mktName}] Formula: ${formula} | Pred: ${pred} | Target: ${fcol.toUpperCase()}`;
+  navigator.clipboard.writeText(text).then(() => showToast('✅ Rumus di-copy!','green')).catch(()=>{});
+}
+
+function copyRumusCode() {
+  const code = buildRumusCode();
+  navigator.clipboard.writeText(code).then(() => showToast('✅ Code di-copy!','green')).catch(()=>{});
+}
+
+function buildRumusCode() {
+  const mkt = document.getElementById('sr-pasaran-sel')?.value?.toUpperCase() || 'XXX';
+  const fcol = document.getElementById('sr-fcol')?.value || 'e';
+  const formula = buildFormulaLabel().replace(/[^a-zA-Z0-9+\-.]/g,'');
+  const limit = document.getElementById('sr-limit')?.value || '15';
+  const patah = document.getElementById('sr-patah')?.value || '0';
+  const rnd = Math.random().toString(36).substring(2,6).toUpperCase();
+  return `#${mkt}_${fcol}_${formula}_L${limit}-P${patah}_${rnd}`;
+}
+
+/* ─── SAVE MANUAL KE BANK ─── */
+function saveRumusManualToBank() {
+  const mkt = document.getElementById('sr-pasaran-sel');
+  const wbId = mkt?.value;
+  if (!wbId) { showToast('⚠ Pilih pasaran dulu!','red'); return; }
+
+  const formula = buildFormulaLabel();
+  if (formula === '—' || formula === '') { showToast('⚠ Atur formula dulu!','red'); return; }
+
+  const pred = document.getElementById('rbPredResult').textContent;
+  const fcol = document.getElementById('sr-fcol')?.value || 'e';
+  const limit = document.getElementById('sr-limit')?.value || '15';
+  const patah = document.getElementById('sr-patah')?.value || '0';
+  const hari = document.getElementById('sr-hari')?.value || '';
+  const mktShort = mkt.options[mkt.selectedIndex]?.dataset?.short || wbId.toUpperCase();
+  const code = buildRumusCode();
+
+  // Hitung akurasi dari history
+  const hist = getSrHistory(wbId, 30);
+  let hit = 0, total = 0;
+  hist.slice(0, parseInt(limit)).forEach((r, i) => {
+    const p = calcFormula(hist.slice(i+1));
+    const actual = getTargetDigit(r, fcol);
+    if (p !== null && actual !== null) {
+      total++;
+      if (String(p) === String(actual)) hit++;
+    }
+  });
+  const akurasi = total > 0 ? Math.round((hit/total)*100)+'%' : '—';
+
+  const item = {
+    id: Date.now(),
+    market: mktShort,
+    wbId,
+    fcol,
+    digitHasil,
+
+    formula,
+    pred,
+    pjg: parseInt(limit),
+    patah: parseInt(patah),
+    hari,
+    code,
+    akurasi,
+    status: 'pending',
+    savedAt: Date.now(),
+    trekData: buildRealTrekData(wbId, fcol, 20, formula),
+  };
+
+  bankKodeData.unshift(item);
+  saveBankKode();
+  renderBankKode();
+  showToast('✅ Rumus disimpan ke Bank!','green');
+}
+
+/* ─── AUTO SCAN ENGINE (lokal, tanpa AI) ─── */
+let autoScanning = false;
+let autoScanResults = [];
+
+function toggleAutoScan() {
+  if (autoScanning) stopAutoScan(); else startAutoScan();
+}
+
+function startAutoScan() {
+  const wbId = document.getElementById('sr-pasaran-sel')?.value;
+  if (!wbId) { showToast('⚠ Pilih pasaran dulu!','red'); return; }
+
+  const target = parseInt(document.getElementById('sr-target')?.value || '10');
+  const fcol = document.getElementById('sr-fcol')?.value || 'e';
+  const digitHasil = parseInt(document.getElementById('sr-digit')?.value || '2');
+  const limit = parseInt(document.getElementById('sr-limit')?.value || '15');
+  const hari = document.getElementById('sr-hari')?.value || '';
+  const mkt = document.getElementById('sr-pasaran-sel');
+  const mktShort = mkt.options[mkt.selectedIndex]?.dataset?.short || wbId.toUpperCase();
+
+  const hist = getSrHistory(wbId, 30);
+  if (hist.length < 5) { showToast('⚠ Data history kurang (min 5)','red'); return; }
+
+  autoScanning = true;
+  autoScanResults = [];
+  document.getElementById('srScanBtn').textContent = '⏹ STOP';
+  document.getElementById('srScanBtn').classList.add('scanning');
+  document.getElementById('srTableBody').innerHTML = '';
+  const radar = document.getElementById('radarTerminal');
+  radar.classList.add('scanning');
+  document.getElementById('radarText').textContent = '🔍 MEMINDAI RUMUS...';
+
+  // Generate kombinasi formula dan hitung akurasi
+  const candidates = [];
+  const mods = ['-','ix','ty','ml','mb','m0','m1','m3','m5','m7','m9'];
+  const ops = ['+','-','.'];
+
+  // Daftar preset key
+  const keys = ['A1','A2','A3','C1','C2','C3','K1','K2','K3','E1','E2','E3',
+                 'J1','J2','J3','Js1','Jt1','Jd1','J3D1','J4D1'];
+
+  let scanned = 0;
+  const is2D = ['ke','ck','ac'].includes(fcol);
+
+  function runBatch() {
+    if (!autoScanning) return;
+    const batchSize = 120;
+    let i = 0;
+    while (i < batchSize && scanned < 8000) {
+      const e1 = keys[Math.floor(Math.random()*keys.length)];
+      const e2 = Math.random() > 0.35 ? keys[Math.floor(Math.random()*keys.length)] : '-';
+      const o1 = e2 !== '-' ? ops[Math.floor(Math.random()*ops.length)] : '-';
+      const mod = mods[Math.floor(Math.random()*mods.length)];
+
+      // Hitung akurasi
+      let hit = 0, total2 = 0;
+      hist.slice(0, limit).forEach((r, idx) => {
+        const subHist = hist.slice(idx+1);
+        if (subHist.length === 0) return;
+        const v1 = parseElemCode(e1, subHist);
+        const v2 = (e2 !== '-') ? parseElemCode(e2, subHist) : null;
+
+        let res = v1;
+        if (v2 !== null && res !== null && o1 !== '-') res = applyOp(res, v2, o1);
+        if (res !== null && mod !== '-') res = applyMod(res, mod);
+
+        const actual = getTargetDigit(r, fcol);
+        if (res !== null && actual !== null) {
+          total2++;
+          if (is2D) {
+            // 2D: cocok jika res = kepala atau ekor target
+            const aK = Math.floor(actual/10), aE = actual%10;
+            if (res === aK || res === aE) hit++;
+          } else {
+            if (res === actual) hit++;
+          }
+        }
+      });
+
+      const acc = total2 > 0 ? hit/total2 : 0;
+      const label = e2 !== '-'
+        ? `${e1}${o1}${e2}${mod !== '-' ? '.'+mod : ''}`
+        : `${e1}${mod !== '-' ? '.'+mod : ''}`;
+
+      // 2D: baseline acak ~18% (cocok K atau E), threshold perlu lebih tinggi
+      const minAcc = is2D ? 0.28 : 0.10;
+      if (acc >= minAcc && total2 >= 3) {
+        candidates.push({ e1, o1, e2, mod, formula: label, acc, hit, total: total2 });
+      }
+      scanned++; i++;
+    }
+
+    const pct = Math.min(99, Math.round((scanned / 8000)*100));
+    document.getElementById('radarText').textContent = `SCAN [ ${pct}% ] · ${candidates.length} kandidat ditemukan...`;
+
+    if (scanned >= 8000 || (candidates.length >= target * 5 && scanned >= 500)) {
+      finishAutoScan(candidates, wbId, mktShort, fcol, limit, hari);
+    } else {
+      setTimeout(runBatch, 8);
+    }
+  }
+
+  setTimeout(runBatch, 50);
+}
+
+function finishAutoScan(candidates, wbId, mktShort, fcol, limit, hari) {
+  autoScanning = false;
+  document.getElementById('srScanBtn').textContent = '📡 SCAN';
+  document.getElementById('srScanBtn').classList.remove('scanning');
+  document.getElementById('radarTerminal').classList.remove('scanning');
+
+  // Sort by accuracy desc, dedup formula
+  const seen = new Set();
+  const top = candidates
+    .filter(c => { if(seen.has(c.formula)) return false; seen.add(c.formula); return true; })
+    .sort((a,b) => b.acc - a.acc);
+
+  const target = parseInt(document.getElementById('sr-target')?.value || '10');
+  const final = top.slice(0, target);
+
+  final.forEach((c, idx) => {
+    const hist = getSrHistory(wbId, 30);
+    const is2Dfc = ['ke','ck','ac'].includes(fcol);
+    let predStr = '--';
+
+    if (is2Dfc) {
+      // Mode 2D: e1=digit pertama, e2=digit kedua, gabung jadi 2D
+      const d1 = parseElemCode(c.e1, hist);
+      const d2 = c.e2 !== '-' ? parseElemCode(c.e2, hist) : null;
+      const d1m = (d1 !== null && c.mod !== '-') ? applyMod(d1, c.mod) : d1;
+      if (d1m !== null && d2 !== null) predStr = String(d1m) + String(d2);
+      else if (d1m !== null) predStr = String(d1m).padStart(2,'0');
+    } else {
+      const vals = [parseElemCode(c.e1, hist)];
+      if (c.e2 !== '-') vals.push(parseElemCode(c.e2, hist));
+      let pred = vals[0];
+      if (vals.length > 1 && pred !== null && vals[1] !== null) pred = applyOp(pred, vals[1], c.o1);
+      if (pred !== null && c.mod !== '-') pred = applyMod(pred, c.mod);
+      predStr = pred !== null ? String(pred) : '--';
+    }
+
+    const fcol2 = fcol;
+    const acc = Math.round(c.acc*100)+'%';
+    const pjg = parseInt(limit);
+
+    const item = {
+      id: Date.now()+'-'+idx, market: mktShort, wbId,
+      fcol: fcol2, formula: c.formula, pred: predStr,
+      pjg, hari, akurasi: acc, saved: false
+    };
+    autoScanResults.push(item);
+    addAutoScanRow(item);
+  });
+
+  document.getElementById('radarText').textContent = `✅ SELESAI · ${final.length} RUMUS DITEMUKAN`;
+  showToast(`✅ ${final.length} rumus ditemukan!`, 'green');
+}
+
+function stopAutoScan() {
+  autoScanning = false;
+  document.getElementById('srScanBtn').textContent = '📡 SCAN';
+  document.getElementById('srScanBtn').classList.remove('scanning');
+  document.getElementById('radarTerminal').classList.remove('scanning');
+  document.getElementById('radarText').textContent = 'Dihentikan · ' + autoScanResults.length + ' rumus';
+}
+
+function addAutoScanRow(item) {
+  const tb = document.getElementById('srTableBody');
+  if (tb.querySelector('td[colspan]')) tb.innerHTML = '';
+  const tr = document.createElement('tr');
+  tr.id = 'sr-' + item.id;
+  const hotClass = item.pjg >= 15 ? 'pjg-hot' : '';
+  tr.innerHTML = `
+    <td><span class="formula-code">${item.formula}</span></td>
+    <td><span class="pred-num">${item.pred}</span></td>
+    <td><span class="pjg-num ${hotClass}">${item.pjg}</span></td>
+    <td><span style="font-size:10px;font-weight:800;color:var(--green);">${item.akurasi}</span></td>
+    <td><button class="btn-save-xs" id="svbtn-${item.id}" onclick="saveAutoScanOne('${item.id}')">⬇ Save</button></td>`;
+  tb.appendChild(tr);
+  tr.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function saveAutoScanOne(id) {
+  const item = autoScanResults.find(r => String(r.id) === String(id));
+  if (!item || item.saved) return;
+  const code = `#${item.market}_${item.fcol}_${item.formula.replace(/[^a-zA-Z0-9+\-.]/g,'')}_L${item.pjg}-P0_${Math.random().toString(36).substring(2,6).toUpperCase()}`;
+  const typeMap = {
+    'ai':'J','am':'AM','ke':'KE','ck':'CK','ac':'AC','k':'KEP','e':'EKR',
+    'a':'AS','c':'COP','cb':'CB','cm':'CM','cn':'CN'
+  };
+  loadBankKode();
+  bankKodeData.unshift({
+    id: Date.now(),
+    market: item.market,
+    fcol: item.fcol,
+    type: typeMap[item.fcol] || item.fcol.toUpperCase(),
+    hari: item.hari || 'Harian',
+    angka: item.pred,
+    pred: item.pred,
+    pjg: item.pjg,
+    code,
+    formula: item.formula,
+    akurasi: item.akurasi,
+    status: 'ok',
+    trekData: buildRealTrekData(item.wbId||item.market.toLowerCase(), item.fcol, 20, item.formula),
+    savedAt: Date.now()
+  });
+  saveBankKode();
+  renderBankKode();
+  item.saved = true;
+  const btn = document.getElementById('svbtn-'+id);
+  if (btn) { btn.textContent = '✅ Saved'; btn.classList.add('saved'); btn.disabled = true; }
+  showToast('✅ Disimpan ke Bank!', 'green');
+}
+
+function clearScanResults() {
+  autoScanResults = [];
+  document.getElementById('srTableBody').innerHTML =
+    '<tr><td colspan="5" style="padding:20px;color:var(--muted);font-size:11px;text-align:center;">Klik SCAN untuk memulai...</td></tr>';
+  document.getElementById('radarText').textContent = 'Siap memulai Auto Scan...';
+  document.getElementById('radarTerminal').classList.remove('scanning');
+}
+
+function saveAllToBank() {
+  const unsaved = autoScanResults.filter(r => !r.saved);
+  if (!unsaved.length) { showToast('Tidak ada rumus baru', 'red'); return; }
+  unsaved.forEach(item => saveAutoScanOne(item.id));
+  showToast('✅ ' + unsaved.length + ' rumus disimpan!', 'green');
+}
+
+/* ─── PASARAN MODAL untuk tab scanner-rumus ─── */
+function openPasaranModal() {
+  const overlay = document.getElementById('pasaranModalOverlay');
+  const list = document.getElementById('pasaranModalList');
+  const markets = (typeof WBData !== 'undefined') ? WBData.MARKETS : [];
+  list.innerHTML = markets.map(m =>
+    `<div class="pasaran-list-item" onclick="selectPasaranModal('${m.id}','${m.short}','${m.name}')">
+       <span>${m.flag} ${m.name}</span>
+       <span class="p-code">${m.short}</span>
+     </div>`
+  ).join('');
+  overlay.classList.add('open');
+}
+function selectPasaranModal(id, short, name) {
+  // Update dropdown
+  const sel = document.getElementById('sr-pasaran-sel');
+  if (sel) sel.value = id;
+  closePasaranModalDirect();
+  onSrPasaranChange();
+}
+function closePasaranModal(e) {
+  if (e.target === document.getElementById('pasaranModalOverlay')) closePasaranModalDirect();
+}
+function closePasaranModalDirect() {
+  document.getElementById('pasaranModalOverlay').classList.remove('open');
+}
+
+/* ─── INIT SCANNER RUMUS ─── */
+function initScannerRumus() {
+  // Populate elemen dropdown
+  populateRbSelects();
+  // Populate pasaran select dari WBData
+  const sel = document.getElementById('sr-pasaran-sel');
+  if (sel && typeof WBData !== 'undefined') {
+    WBData.MARKETS.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      opt.textContent = m.flag + ' ' + m.name + ' (' + m.short + ')';
+      opt.dataset.short = m.short;
+      sel.appendChild(opt);
+    });
+  }
+  // Add CSS for rb selects
+  const style = document.createElement('style');
+  style.textContent = `
+    .rb-sel,.rb-op{background:var(--bg3);border:1px solid var(--border2);border-radius:7px;
+      padding:6px 4px;color:var(--text);font-family:'Nunito';font-size:11px;font-weight:700;
+      width:100%;outline:none;cursor:pointer;}
+    .rb-sel:focus,.rb-op:focus{border-color:var(--cyan);}
+    .rb-op{background:rgba(0,212,255,.06);color:var(--cyan);text-align:center;font-weight:800;max-width:100%;}
+  `;
+  document.head.appendChild(style);
+}
+
+/* ══════════════════════════════════════════════
+   BANK RUMUS KODE — CRUD
+══════════════════════════════════════════════ */
+function loadBankKode(){
+  try{ bankKodeData=JSON.parse(localStorage.getItem(STORAGE_KODE)||'[]'); }
+  catch(e){ bankKodeData=[]; }
+}
+function saveBankKode(){ localStorage.setItem(STORAGE_KODE, JSON.stringify(bankKodeData)); }
+function clearBankKode(){
+  if(!confirm('Hapus semua data Bank Rumus?')) return;
+  bankKodeData=[];saveBankKode();renderBankKode();showToast('🗑 Bank Rumus dikosongkan','red');
+}
+
+function makeBankItem(item){
+  // Buat trek data dari history WBData yang real
+  const wbIdMap = {
+    'HK':'hk','HKG':'hk','SGP':'sgp','SDY':'sdy','SDL':'sdl','HKLT':'hkl',
+    'KAM':'kam','BULL':'bull','CHN':'chn','JPN':'jpn','TWN':'twn'
+  };
+  const wbId = wbIdMap[item.market] || item.market.toLowerCase();
+  const trekData = buildRealTrekData(item.wbId||wbId, item.fcol||'e', 20, item.formula);
+
+  return {
+    id: String(item.id), // pastikan string, tidak float
+    market: item.market,
+    fcol: item.fcol,
+    type: item.rmsType,
+    hari: item.harix||'Harian',
+    angka: item.pred,
+    pjg: item.pjg,
+    code: item.code,
+    formula: item.formula,
+    akurasi: item.akurasi||'70%',
+    status:'ok',
+    trekData,
+    savedAt: Date.now()
+  };
+}
+
+function saveScanOne(id){
+  const item=scanResults.find(r=>String(r.id)===String(id)||r.id===id);
+  if(!item) return;
+  if(item.saved){ showToast('Sudah tersimpan!','blue'); return; }
+  loadBankKode();
+  bankKodeData.unshift(makeBankItem(item));
+  saveBankKode();
+  item.saved=true;
+  const btn=document.getElementById('svbtn-'+id);
+  if(btn){btn.className='btn-save-xs saved';btn.textContent='✓ Saved';}
+  showToast('✅ Disimpan ke Bank Rumus!','green');
+}
+
+function saveAllToBank(){
+  if(!scanResults.length){ showToast('Belum ada hasil scan!','red'); return; }
+  loadBankKode();
+  let added=0;
+  scanResults.forEach(item=>{
+    if(!item.saved){
+      bankKodeData.unshift(makeBankItem(item));
+      item.saved=true;
+      const btn=document.getElementById('svbtn-'+item.id);
+      if(btn){btn.className='btn-save-xs saved';btn.textContent='✓ Saved';}
+      added++;
+    }
+  });
+  saveBankKode();
+  showToast(added>0?`✅ ${added} rumus disimpan!`:'Semua sudah tersimpan!', added>0?'green':'blue');
+}
+
+function renderBankKode(){
+  loadBankKode();
+  document.getElementById('bankKodeCount').textContent=bankKodeData.length;
+  const filter=document.getElementById('bankKodeFilter').value;
+  const data=filter?bankKodeData.filter(r=>r.market===filter):bankKodeData;
+  const empty=document.getElementById('bankKodeEmpty');
+  const body=document.getElementById('bankKodeBody');
+
+  if(!data.length){
+    body.innerHTML='';empty.style.display='block';return;
+  }
+  empty.style.display='none';
+  body.innerHTML=data.map(item=>{
+    const status=item.status==='ok'
+      ?`<span class="bank-status-ok">✓ OK</span>`
+      :`<span class="bank-status-bad">⏳ Pending</span>`;
+    return `<tr id="brow-${item.id}">
+      <td><input type="checkbox" class="bk-chk" data-id="${item.id}" onchange="updateSelBar()" style="width:auto;margin:0;padding:0;"></td>
+      <td><span class="rms-badge">${item.market}</span> <span class="bank-type-tag">${item.type||'J'}</span></td>
+      <td style="font-size:10px;color:var(--muted);font-weight:700;">${item.hari||'Harian'}</td>
+      <td><span class="pred-num">${item.angka}</span></td>
+      <td class="pjg-num ${item.pjg>=15?'pjg-hot':''}">${item.pjg}</td>
+      <td>${status}</td>
+      <td>
+        <div style="display:flex;gap:4px;">
+          <button class="btn-sm btn-sm-cyan" style="padding:3px 7px;font-size:10px;" onclick="openTrek('${item.id}')">Trek</button>
+          <button class="btn-sm btn-sm-red" style="padding:3px 7px;font-size:10px;" onclick="deleteKodeItem('${item.id}')">Del</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function deleteKodeItem(id){
+  bankKodeData=bankKodeData.filter(r=>String(r.id)!==String(id));
+  saveBankKode();renderBankKode();showToast('🗑 Dihapus','red');
+}
+function deleteSelected(){
+  const ids=[...document.querySelectorAll('.bk-chk:checked')].map(c=>c.dataset.id);
+  if(!ids.length) return;
+  bankKodeData=bankKodeData.filter(r=>!ids.includes(String(r.id)));
+  saveBankKode();renderBankKode();updateSelBar();showToast(`🗑 ${ids.length} dihapus!`,'red');
+}
+function toggleAllChk(el){
+  document.querySelectorAll('.bk-chk').forEach(c=>c.checked=el.checked);updateSelBar();
+}
+function updateSelBar(){
+  const sel=document.querySelectorAll('.bk-chk:checked').length;
+  document.getElementById('selCount').textContent=sel;
+  document.getElementById('selBar').classList.toggle('active',sel>0);
+}
+
+/* IMPORT KODE */
+function importRumusKode(){
+  const code=document.getElementById('importInput').value.trim();
+  const msg=document.getElementById('importMsg');
+  if(!code){ showMsg(msg,'⚠ Masukkan kode rumus terlebih dahulu!','#dc2626'); return; }
+  const parts=code.replace(/^#/,'').split('_');
+  if(parts.length<2){ showMsg(msg,'⚠ Format tidak valid! Contoh: #HKG_ai_...','#dc2626'); return; }
+  const market=parts[0].toUpperCase();
+  const fcol  =parts[1]||'j';
+  const formula=parts[2]||'IMPORTED';
+  const pred  =genPred(fcol);
+  const pjg   =rInt(7,15);
+  const type  =TARGET_LABELS[fcol]||'JML';
+  const wbIdMap3={'HK':'hk','HKG':'hk','SGP':'sgp','SDY':'sdy','SDL':'sdl','HKLT':'hkl','KAM':'kam','BULL':'bull','CHN':'chn','JPN':'jpn','TWN':'twn'};
+  const wbIdImp = wbIdMap3[market] || market.toLowerCase();
+  loadBankKode();
+  bankKodeData.unshift({
+    id:Date.now(), market, fcol, type, hari:'Harian',
+    angka:pred, pjg, code, formula, status:'ok',
+    trekData:buildRealTrekData(wbIdImp, fcol, 20, formula), savedAt:Date.now()
+  });
+  saveBankKode();renderBankKode();
+  document.getElementById('importInput').value='';
+  showMsg(msg,'✅ Rumus berhasil diimport!','#10b981');
+  showToast('✅ Import berhasil!','green');
+}
+function showMsg(el,text,color){
+  el.style.display='block';el.style.color=color;el.textContent=text;
+  setTimeout(()=>el.style.display='none',3000);
+}
+
+/* TREK MODAL */
+function openTrek(id){
+  const item=bankKodeData.find(r=>String(r.id)===String(id));
+  if(!item) return;
+  currentModalId=id;
+  document.getElementById('trekTitle').textContent=`Trek ${item.code}`;
+
+  const wbIdMap={'HK':'hk','HKG':'hk','SGP':'sgp','SDY':'sdy','SDL':'sdl','HKLT':'hkl','KAM':'kam','BULL':'bull','CHN':'chn','JPN':'jpn','TWN':'twn'};
+  const wbId   = item.wbId || wbIdMap[item.market] || item.market.toLowerCase();
+  const fcol   = item.fcol || 'e';
+  const formula= item.formula || '';
+
+  // Selalu recompute dari formula string nyata
+  const trekData = buildRealTrekData(wbId, fcol, 20, formula, digitH);
+  const hitCount   = trekData.filter(d=>d.hit).length;
+  const patahCount = trekData.filter(d=>d.period&&d.pred!=='—'&&!d.hit).length;
+
+  document.getElementById('trekBody').innerHTML=
+    `<div style="font-size:10px;color:var(--muted);margin-bottom:8px;">
+      Tipe: ${item.type||fcol.toUpperCase()} · Pasaran: ${item.market} · Formula: ${formula}
+      &nbsp;<span style="color:var(--green);">✓ HIT: ${hitCount}</span>
+      &nbsp;<span style="color:#f87171;">✗ PATAH: ${patahCount}</span>
+    </div>`+
+    trekData.map(d=>`<div class="trek-line">
+      <span class="trek-period">${d.period}</span>
+      <span class="trek-pred" style="${d.hit?'color:var(--green)':d.pred!=='—'?'color:#f87171':''}">${d.pred}</span>
+      <span style="font-size:9px;margin-left:auto;${d.hit?'color:var(--green);font-weight:800;':''}">${d.hit?'✓ HIT':d.pred!=='—'?'✗':'—'}</span>
+    </div>`).join('');
+  document.getElementById('trekModal').classList.add('open');
+}
+function closeTrekModal(e){ if(e.target===document.getElementById('trekModal')) closeTrekModalDirect(); }
+function closeTrekModalDirect(){ document.getElementById('trekModal').classList.remove('open'); currentModalId=null; }
+function deleteFromModal(){
+  if(currentModalId) deleteKodeItem(currentModalId);
+  closeTrekModalDirect();
+}
+function updateStatusFromModal(){
+  const item=bankKodeData.find(r=>String(r.id)===String(currentModalId));
+  if(item){item.status='ok';saveBankKode();}
+  closeTrekModalDirect();
+  renderBankKode();
+  showToast('✅ Status diupdate','green');
+}
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+function showToast(msg, type='blue'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast ${type} show`;
+  setTimeout(()=>t.className=`toast ${type}`,2500);
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+init();
+</script>
+</body>
+</html>
