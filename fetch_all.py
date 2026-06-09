@@ -23,7 +23,7 @@ TODAY = NOW.strftime('%d/%m')
 BASE      = 'https://angkanet18.com'
 DIRECT_IP = '159.65.133.131'
 
-HISTORY_MAX = 60   # simpan max 60 hari per pasaran
+HISTORY_MAX = 150  # simpan max 150 hari per pasaran (butuh ~14 minggu untuk trek mingguan)
 
 # ===== DAFTAR 65 PASARAN =====
 PASARAN = {
@@ -95,6 +95,30 @@ PASARAN = {
 
 PASARAN_MALAM = {'mrq23', 'mac6', 'txn', 'geon', 'ctn', 'van', 'tne'}
 
+# Pasaran mingguan: result hanya keluar pada hari tertentu saja.
+# Untuk pasaran ini, Strategy F (offset harian) DILARANG dipakai
+# karena akan menggeser history jika ada hari yang terlewat.
+# Pasaran ini WAJIB fetch individual agar tanggal akurat dari HTML.
+PASARAN_MINGGUAN = {'hk', 'hkl', 'sgp', 'bull', 'pcso'}
+
+# Hari libur per pasaran (0=Sen,1=Sel,2=Rab,3=Kam,4=Jum,5=Sab,6=Min)
+PASARAN_LIBUR = {
+    'sgp':  {1, 4},   # libur Selasa & Jumat
+    # Pasaran libur Minggu:
+    'pcso': {6}, 'mac5': {6}, 'mrq3': {6}, 'mrq23': {6},
+    'ger':  {6}, 'or4':  {6}, 'or7':  {6}, 'ncd':   {6},
+    'geom': {6}, 'txd':  {6}, 'txmr': {6}, 'txe':   {6},
+    'nyd':  {6}, 'flm':  {6}, 'fle':  {6}, 'ilm':   {6},
+    'ile':  {6}, 'indm': {6}, 'inde': {6}, 'kym':   {6},
+    'kye':  {6}, 'mie':  {6}, 'mom':  {6}, 'wdm':   {6},
+    'ctd':  {6}, 'ctn':  {6}, 'vad':  {6}, 'van':   {6},
+    'tnm':  {6}, 'tne':  {6}, 'tnmr': {6}, 'nce':   {6},
+    'ncm':  {6}, 'wim':  {6}, 'wie':  {6}, 'cal':   {6},
+    'gam':  {6}, 'gae':  {6}, 'mam':  {6}, 'mae':   {6},
+    'nvm':  {6}, 'nve':  {6},
+    'mdm':  {6}, 'mde':  {6}, 'mim':  {6}, 'moe':  {6}, 'wde':  {6},
+}
+
 TODAY_TUPLE = (NOW.year, NOW.month, NOW.day)
 TODAY_STR   = f"{TODAY_TUPLE[0]:04d}-{TODAY_TUPLE[1]:02d}-{TODAY_TUPLE[2]:02d}"
 
@@ -120,9 +144,12 @@ FAKE_PATTERNS = [
 ]
 
 def is_year(result):
+    # Hanya filter tahun yang sangat jelas (sekitar tahun sekarang ±5)
+    # Jangan filter terlalu lebar karena 1800-2099 banyak overlap dengan result togel valid
     try:
         n = int(result)
-        return 1800 <= n <= 2099
+        current_year = NOW.year
+        return (current_year - 2) <= n <= (current_year + 1)
     except Exception:
         return False
 
@@ -162,7 +189,32 @@ def update_history(old_data: dict, new_result: str, date_str: str) -> list:
 
 
 # ===== EKSTRAK SEMUA BARIS HISTORIS DARI HTML =====
-def extract_all_rows(html):
+def detect_active_weekdays(history: list) -> set:
+    """
+    Dari history yang sudah punya tanggal akurat (paito-harian),
+    deteksi hari-hari aktif pasaran (0=Mon...6=Sun Python weekday).
+    Minimal 3 data agar pola terdeteksi.
+    """
+    import datetime as _dt_wd
+    if len(history) < 3:
+        return set()
+    weekday_count = {}
+    for h in history:
+        try:
+            d = _dt_wd.date.fromisoformat(h['date'])
+            wd = d.weekday()
+            weekday_count[wd] = weekday_count.get(wd, 0) + 1
+        except Exception:
+            continue
+    if not weekday_count:
+        return set()
+    # Ambil hari yang muncul minimal 30% dari total entry (filter noise)
+    threshold = max(1, len(history) * 0.3 / 7)
+    active = {wd for wd, cnt in weekday_count.items() if cnt >= threshold}
+    return active
+
+
+def extract_all_rows(html, anchor_date=None, active_weekdays=None, libur_days=None):
     """
     Ambil SEMUA baris valid (tanggal + result) dari HTML satu halaman pasaran.
     Return: [{'date': 'YYYY-MM-DD', 'result': '1234'}, ...]  descending tanggal.
@@ -197,7 +249,7 @@ def extract_all_rows(html):
 
     today_ord = NOW.toordinal()
 
-    def is_recent(d_tuple, max_days=60):
+    def is_recent(d_tuple, max_days=150):
         """Hanya terima tanggal max_days hari ke belakang, tolak yg jadul."""
         try:
             import datetime as _dt
@@ -293,7 +345,7 @@ def extract_all_rows(html):
         el_pos     = {id(el): i for i, el in enumerate(all_els)}
 
         # Kumpulkan semua posisi elemen yang berisi tanggal valid (teks pendek saja)
-        # Hanya tanggal recent (max 60 hari), abaikan tanggal jadul dari meta/script
+        # Hanya tanggal recent (max 150 hari), abaikan tanggal jadul dari meta/script
         date_pos_list = []
         for el in all_els:
             if not hasattr(el, 'get_text'):
@@ -361,27 +413,45 @@ def extract_all_rows(html):
             all_lines.append(items_in_line)
 
     if all_lines:
-        # Baca dari baris pertama ke terakhir (terlama ke terbaru),
-        # tiap baris dari kiri ke kanan — urutan natural paito warna
-        results_ordered = []
+        # ── Strategy F: paito warna, baca FLAT kiri→kanan atas→bawah ──
+        # Entry terakhir (kanan bawah) = result terbaru = anchor_date
+        # libur_days: set hari libur (0=Sen...6=Min)
+        flat = []
         for line in all_lines:
-            for r in line:
-                results_ordered.append(r)
+            flat.extend(line)
 
-        # Potong HISTORY_MAX terbaru = ambil dari ekor list
-        results_ordered = results_ordered[-HISTORY_MAX:]
+        if anchor_date:
+            try:
+                base = _dt.date.fromisoformat(anchor_date)
+            except Exception:
+                base = _dt.date(NOW.year, NOW.month, NOW.day) - _dt.timedelta(days=1)
+        else:
+            base = _dt.date(NOW.year, NOW.month, NOW.day) - _dt.timedelta(days=1)
 
-        # Result terakhir di list = result terbaru (kemarin)
-        # Assign tanggal mundur dari kemarin
-        base = _dt.date(NOW.year, NOW.month, NOW.day) - _dt.timedelta(days=1)
+        skip = libur_days or set()
+
+        def prev_active(d):
+            d -= _dt.timedelta(days=1)
+            while d.weekday() in skip:
+                d -= _dt.timedelta(days=1)
+            return d
+
+        cur = base
+        while cur.weekday() in skip:
+            cur -= _dt.timedelta(days=1)
+
         rows_F = []
-        total = len(results_ordered)
-        for i, r in enumerate(results_ordered):
-            # i=0 = result terlama, i=total-1 = result terbaru (kemarin)
-            d = base - _dt.timedelta(days=(total - 1 - i))
-            rows_F.append({'date': d.isoformat(), 'result': r})
-        # Kembalikan descending (terbaru dulu)
-        rows_F.reverse()
+        seen_dF = set()
+        for r in reversed(flat):
+            ds = cur.isoformat()
+            if ds not in seen_dF:
+                seen_dF.add(ds)
+                rows_F.append({'date': ds, 'result': r})
+            cur = prev_active(cur)
+            if len(rows_F) >= HISTORY_MAX:
+                break
+
+        rows_F.sort(key=lambda x: x['date'], reverse=True)
         return rows_F
 
     return []
@@ -390,12 +460,14 @@ def extract_all_rows(html):
 def merge_rows_into_history(existing_history: list, new_rows: list) -> list:
     """
     Gabungkan history lama + baris baru.
-    Prioritas: tanggal yg sudah ada di history lama TIDAK ditimpa.
+    Prioritas: data baru dari HTML MENIMPA data lama (lebih akurat).
+    Data lama hanya dipakai untuk tanggal yang tidak ada di new_rows.
     """
+    # Mulai dari data lama
     combined = {h['date']: h['result'] for h in existing_history}
+    # Data baru selalu timpa data lama
     for r in new_rows:
-        if r['date'] not in combined:
-            combined[r['date']] = r['result']
+        combined[r['date']] = r['result']
     merged = [{'date': d, 'result': res} for d, res in combined.items()]
     merged.sort(key=lambda x: x['date'], reverse=True)
     return merged[:HISTORY_MAX]
@@ -637,7 +709,7 @@ def fetch_paito_harian():
 
     if not html:
         print("  Semua URL gagal — skip paito-harian.")
-        return {}
+        return {}, {}
 
     soup = BeautifulSoup(html, 'html.parser')
     found = {}
@@ -731,28 +803,35 @@ def fetch_paito_harian():
                     current_key = k
 
         cls = tag.get('class') or []
-        if 'paito-line' in cls and current_key and current_key not in harian_hist:
-            results = []
-            for item in tag.find_all(class_='paito-row-item'):
-                full = item.get_text(strip=True)
-                if re.match(r'^\d{4}$', full) and not is_fake(full):
-                    results.append(full)
-                else:
-                    digits = [d.get_text(strip=True)
-                              for d in item.find_all(class_='paito-digit')]
-                    if len(digits) == 4:
-                        num = ''.join(digits)
-                        if re.match(r'^\d{4}$', num) and not is_fake(num):
-                            results.append(num)
-            if results:
-                hist = []
-                for i, res in enumerate(results):
-                    # Mulai dari KEMARIN (i+1), bukan hari ini
-                    # paito-harian belum update real-time saat result belum keluar
-                    d = (NOW.date() - timedelta(days=i+1)).strftime('%Y-%m-%d')
-                    hist.append({'date': d, 'result': res})
-                harian_hist[current_key] = hist
-                print(f"  [{current_key.upper():6s}] hist paito-harian: {len(hist)} entry")
+        if 'paito-line' in cls and current_key:
+            # Baca tanggal + result dari tiap paito-line (sama seperti Strategy A)
+            date_found = None
+            result_found = None
+            for el in tag.find_all(True):
+                t = el.get_text(strip=True)
+                if date_found is None:
+                    d = parse_date(t)
+                    if d:
+                        date_found = d
+                if result_found is None:
+                    if re.match(r'^\d{4}$', t) and not is_fake(t):
+                        result_found = t
+                    else:
+                        digits = [d2.get_text(strip=True)
+                                  for d2 in el.find_all(class_='paito-digit')]
+                        if len(digits) == 4:
+                            num = ''.join(digits)
+                            if re.match(r'^\d{4}$', num) and not is_fake(num):
+                                result_found = num
+                if date_found and result_found:
+                    break
+            if date_found and result_found and is_recent(date_found):
+                ds = f"{date_found[0]:04d}-{date_found[1]:02d}-{date_found[2]:02d}"
+                if current_key not in harian_hist:
+                    harian_hist[current_key] = []
+                existing_dates = {r['date'] for r in harian_hist[current_key]}
+                if ds not in existing_dates:
+                    harian_hist[current_key].append({'date': ds, 'result': result_found})
 
     print(f"  [PAITO-HARIAN] History ditemukan: {len(harian_hist)} pasaran\n")
     return found, harian_hist
@@ -785,21 +864,54 @@ def fetch_pasaran(key, path, name):
             html_text   = resp.text
             fetch_date, result = extract_result(html_text)
             # Ambil semua baris historis sekaligus dari HTML yang sama (zero request tambahan)
-            all_rows    = extract_all_rows(html_text)
+            # anchor_date: tanggal result terbaru agar Strategy F tidak geser
+            # Tentukan anchor untuk Strategy F:
+            # - Kalau paito sudah update (entry terakhir = result hari ini): anchor = hari ini
+            # - Kalau belum: anchor = hari aktif sebelumnya (skip hari libur)
+            # Setelah anchor ditentukan, SELALU skip hari libur
+            import datetime as _dt_anc
+            _skip = PASARAN_LIBUR.get(key, set())
+            if fetch_date:
+                _fd = _dt_anc.date(fetch_date[0], fetch_date[1], fetch_date[2])
+            else:
+                _fd = _dt_anc.date(NOW.year, NOW.month, NOW.day)
+            # Deteksi: cek entry terakhir paito vs result terbaru
+            from bs4 import BeautifulSoup as _BS
+            _soup_tmp = _BS(html_text, 'html.parser')
+            _pl = _soup_tmp.find_all(class_='paito-line')
+            _last_val = None
+            if _pl:
+                _items = [x.get_text(strip=True) for x in _pl[-1].find_all(True)
+                          if len(x.get_text(strip=True))==4 and x.get_text(strip=True).isdigit()]
+                if _items:
+                    _last_val = _items[-1]
+            if _last_val and _last_val == result:
+                _anc = _fd  # paito sudah update
+            else:
+                _anc = _fd - _dt_anc.timedelta(days=1)  # paito belum update
+            # SELALU skip hari libur dari anchor
+            while _anc.weekday() in _skip:
+                _anc -= _dt_anc.timedelta(days=1)
+            anchor = _anc.isoformat()
+            all_rows    = extract_all_rows(html_text, anchor_date=anchor, libur_days=_skip)
+            # Untuk pasaran mingguan, active_weekdays akan dideteksi saat backfill
+            # (saat ini belum ada history akurat, skip dulu)
 
             if result:
                 if fetch_date is None:
                     fetch_date = list(TODAY_TUPLE)
 
-                date_str = (
-                    f"{fetch_date[0]:04d}-{fetch_date[1]:02d}-{fetch_date[2]:02d}"
-                    if fetch_date else None
-                )
+                date_str = f"{fetch_date[0]:04d}-{fetch_date[1]:02d}-{fetch_date[2]:02d}"
 
-                if fetch_date and tuple(fetch_date) < TODAY_TUPLE:
+                # Toleransi stale: max 2 hari ke belakang (pasaran luar negeri timezone beda)
+                import datetime as _dt_stale
+                today_date = _dt_stale.date(TODAY_TUPLE[0], TODAY_TUPLE[1], TODAY_TUPLE[2])
+                fetch_date_obj = _dt_stale.date(fetch_date[0], fetch_date[1], fetch_date[2])
+                days_old = (today_date - fetch_date_obj).days
+                if days_old > 2:
                     print(f"  [{key.upper():6s}] STALE {result} dari {date_str} "
-                          f"(bukan hari ini {TODAY_TUPLE}) → anggap belum keluar")
-                    last_err = f'stale data dari {date_str}'
+                          f"({days_old} hari lalu) → anggap belum keluar")
+                    last_err = f'stale data {days_old} hari dari {date_str}'
                     continue
 
                 print(f"  [{key.upper():6s}] OK {result}  ({name}){via}"
@@ -863,17 +975,40 @@ def main():
     # ── STEP 1: Fetch paito-harian ──
     harian, harian_hist = fetch_paito_harian()
 
+    # ── PHANTOM DETECTION ──
+    # Kalau nilai yang sama muncul di >10 market sekaligus → elemen statis, bukan result asli
+    if harian:
+        from collections import Counter as _Ctr
+        _vc = _Ctr(harian.values())
+        _phantom = {v for v, c in _vc.items() if c > 10}
+        if _phantom:
+            for _pv in _phantom:
+                _cnt = _vc[_pv]
+                print(f"  [PHANTOM] Nilai '{_pv}' muncul di {_cnt} pasaran — dibuang semua")
+            harian = {k: v for k, v in harian.items() if v not in _phantom}
+            # Bersihkan juga harian_hist untuk market yang phantom
+            harian_hist = {k: v for k, v in harian_hist.items()
+                           if k in harian or not all(
+                               str(r.get('result','')) in _phantom
+                               for r in v[:3]
+                           )}
+
     for key, (path, name) in PASARAN.items():
         if key in harian and re.match(r'^\d{4}$', harian[key]) and not is_fake(harian[key]):
+            # Ambil tanggal akurat dari harian_hist jika ada
+            # harian_hist[key] = list of {date, result} urut desc
+            h_rows = harian_hist.get(key, []) if harian_hist else []
+            harian_date = h_rows[0]['date'] if h_rows else TODAY_STR
             entry = {
-                'result':     harian[key],
-                'tgl':        TODAY,
-                'fetch_date': list(TODAY_TUPLE),
-                'status':     'sudah',
-                'updated':    NOW.strftime('%H:%M WIB'),
-                'name':       name,
+                'result':        harian[key],
+                'tgl':           TODAY,
+                'fetch_date':    [int(x) for x in harian_date.split('-')],
+                'status':        'sudah',
+                'updated':       NOW.strftime('%H:%M WIB'),
+                'name':          name,
+                'extra_history': h_rows,
             }
-            print(f"  [{key.upper():6s}] {harian[key]}  ({name}) [paito-harian]")
+            print(f"  [{key.upper():6s}] {harian[key]}  ({name}) [paito-harian] tgl={harian_date}")
         else:
             if key in harian:
                 print(f"  [{key.upper():6s}] Tidak valid dari paito-harian, fetch individual...")
@@ -894,26 +1029,33 @@ def main():
             if new_fd is not None:
                 new_fd_t = tuple(new_fd)
                 if old_fd is not None:
+                    # Tolak hanya jika data baru LEBIH LAMA dari data tersimpan
                     if new_fd_t < tuple(old_fd):
                         should_overwrite = False
-                else:
-                    if new_fd_t < today_t and not is_fake(old_res):
-                        should_overwrite = False
+                # Jika tidak ada old_fd: selalu overwrite (data baru selalu lebih baik dari kosong)
+                # TIDAK cek new_fd_t < today_t karena banyak pasaran result-nya kemarin tapi valid
 
             if should_overwrite:
                 # ── HISTORY: merge result baru + semua baris historis ──
                 # FIX: gunakan tanggal dari extra_history[0] sebagai tanggal result
                 # karena extract_result tidak bisa baca tanggal dari HTML angkanet
                 extra = entry.pop('extra_history', [])
-                if extra and extra[0].get('date') and extra[0].get('result') == entry['result']:
-                    # extra[0] = result terbaru dari paito, tanggalnya akurat
+                if extra and extra[0].get('date'):
+                    # Selalu pakai tanggal dari HTML (akurat)
                     entry_date = extra[0]['date']
-                    extra = extra[1:]  # skip duplikat
+                    # Kalau extra[0] adalah result yg sama, buang dari extra
+                    # tapi tetap pakai entry_date-nya (sudah di-set di atas)
+                    if extra[0].get('result') == entry['result']:
+                        extra = extra[1:]
                 elif new_fd:
                     entry_date = f"{new_fd[0]:04d}-{new_fd[1]:02d}-{new_fd[2]:02d}"
                 else:
                     entry_date = TODAY_STR
+                # update_history: tambahkan result dengan entry_date (tanggal akurat dari HTML)
+                # TIDAK duplikasi ke TODAY_STR — entry_date sudah akurat dari HTML
                 base_history = update_history(old, entry['result'], entry_date)
+                # Buang entry >= entry_date (sudah dihandle update_history)
+                extra = [e for e in extra if e.get('date','') < entry_date]
                 # Merge extra_history dari halaman (backfill otomatis)
                 if extra:
                     base_history = merge_rows_into_history(base_history, extra)
@@ -968,16 +1110,21 @@ def main():
             continue
         backfill_count += 1
 
-        # ── Prioritas 1: gunakan history dari paito-harian ──
+        # ── Prioritas 1: gunakan history dari paito-harian (tanggal akurat) ──
         if key in harian_hist and len(harian_hist[key]) > len(cur_hist):
             new_hist = merge_rows_into_history(cur_hist, harian_hist[key])
             result_data[key]['history'] = new_hist
             added = len(new_hist) - len(cur_hist)
             print(f"  [BF {key.upper():6s}] paito-harian: {len(new_hist)} entry (+{added})")
+            # Update cur_hist agar Prioritas 2 bisa pakai active_weekdays yg akurat
+            cur_hist = new_hist
+
+        # Kalau sudah penuh dari paito-harian, skip fetch individual
+        if len(cur_hist) >= BACKFILL_THRESHOLD:
             continue
 
         # ── Prioritas 2: fetch halaman individual ──
-        print(f"  [BF {key.upper():6s}] Fetch {BASE+path}  (hist: {len(cur_hist)})")
+        print(f"  [BF {key.upper():6s}] Fetch {BASE+path}  (hist: {len(cur_hist)}){''}")
         for url, hdrs in [
             (BASE + path, dict(HEADERS)),
             (f'https://{DIRECT_IP}{path}', {**HEADERS, 'Host': 'angkanet18.com'}),
@@ -990,7 +1137,18 @@ def main():
                 r.raise_for_status()
                 if len(r.text) < 500:
                     continue
-                rows = extract_all_rows(r.text)
+                # anchor = 1 hari sebelum entry tertua di history yang sudah ada
+                # agar Strategy F sambung tepat tanpa overlap/geser
+                import datetime as _dt2
+                # Anchor = dari result terbaru di history (bukan entry tertua)
+                # Pakai history[0] (terbaru) sebagai anchor Strategy F
+                if cur_hist:
+                    bf_anchor = cur_hist[0]['date']
+                else:
+                    bf_anchor = (_dt2.date(TODAY_TUPLE[0], TODAY_TUPLE[1], TODAY_TUPLE[2]) - _dt2.timedelta(days=1)).isoformat()
+                # Deteksi pola hari aktif dari history yang sudah punya tanggal akurat
+                aw = detect_active_weekdays(cur_hist) if key in PASARAN_MINGGUAN else set()
+                rows = extract_all_rows(r.text, anchor_date=bf_anchor, active_weekdays=aw if aw else None, libur_days=PASARAN_LIBUR.get(key, set()))
                 if rows:
                     new_hist = merge_rows_into_history(cur_hist, rows)
                     result_data[key]['history'] = new_hist
@@ -1034,12 +1192,9 @@ def main():
         hist_map = {h['date']: h['result'] for h in hist}
         today_res = hist_map.get(TODAY_STR)
         yest_res  = hist_map.get(yest_str)
-        if today_res and yest_res and today_res == yest_res:
-            result_data[key]['history'] = [
-                h for h in hist if h.get('date') != TODAY_STR
-            ]
-            dobel_cleaned += 1
-            print(f"  [{key.upper():6s}] CLEANUP dobel {TODAY_STR}={today_res} (== {yest_str})")
+        # DIHAPUS: cleanup "dobel" berdasarkan nilai sama berbahaya untuk pasaran mingguan
+        # (angka bisa kebetulan sama di dua hari berbeda). Dedup by date sudah cukup di bawah.
+        pass
     if dobel_cleaned:
         print(f"  [CLEANUP] Total dobel dibersihkan: {dobel_cleaned} pasaran\n")
     # ===== FINAL SAFETY NET: dedup + trim ketat semua history =====
